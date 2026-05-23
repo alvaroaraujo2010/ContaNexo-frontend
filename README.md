@@ -21,4 +21,4 @@ App: `http://localhost:4200`
 
 ## Repositorio relacionado
 
-API .NET: [ContaNexo-Back](https://github.com/alvaroaraujo2010/ContaNexo-Back)
+API .NET: [ContaNexo-frontend](https://github.com/alvaroaraujo2010/ContaNexo-frontend)
