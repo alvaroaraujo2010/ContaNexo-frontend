@@ -1,0 +1,84 @@
+<header class="hero">
+  <nav class="nav">
+    <a routerLink="/" class="brand">
+      <app-brand-logo variant="white" size="xl" />
+    </a>
+    <div class="links">
+      <a href="#servicios">Servicios</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+      <a routerLink="/login" class="btn-admin">Zona administrativa</a>
+    </div>
+  </nav>
+  <div class="hero-content">
+    <p class="badge">Plataforma empresarial</p>
+    <h1>{{ company().businessName }}</h1>
+    <p class="tagline">{{ company().tagline }}</p>
+    <p class="desc">{{ company().description }}</p>
+    <div class="actions">
+      <a routerLink="/login" class="btn primary">Acceder al sistema</a>
+      <a href="#servicios" class="btn secondary">Conocer modulos</a>
+    </div>
+  </div>
+</header>
+
+<section id="servicios" class="section">
+  <h2>Modulos integrados</h2>
+  <p class="section-sub">Todo lo que su negocio necesita en una sola plataforma</p>
+  <div class="grid">
+    <article class="card">
+      <div class="icon"><app-sidebar-icon name="inventario" size="lg" /></div>
+      <h3>Inventario</h3>
+      <p>Control de stock, kardex, alertas de minimos y movimientos en tiempo real.</p>
+    </article>
+    <article class="card">
+      <div class="icon"><app-sidebar-icon name="ventas-compras" size="lg" /></div>
+      <h3>Ventas y compras</h3>
+      <p>Registro de facturas, proveedores, clientes e integracion automatica con inventario.</p>
+    </article>
+    <article class="card">
+      <div class="icon"><app-sidebar-icon name="contabilidad" size="lg" /></div>
+      <h3>Contabilidad</h3>
+      <p>Plan de cuentas, asientos contables, balance de prueba y reportes financieros.</p>
+    </article>
+    <article class="card">
+      <div class="icon"><app-sidebar-icon name="usuarios" size="lg" /></div>
+      <h3>Usuarios y roles</h3>
+      <p>Administrador, contador, vendedor y almacen con permisos diferenciados.</p>
+    </article>
+  </div>
+</section>
+
+<section id="nosotros" class="section alt">
+  <div class="split">
+    <div>
+      <h2>Por que ContaNexo?</h2>
+      <p>ContaNexo conecta la operacion diaria de su negocio con la informacion financiera.</p>
+      <ul>
+        <li>Dashboard con indicadores del mes</li>
+        <li>Productos con categorias y SKU</li>
+        <li>Alertas de stock bajo</li>
+        <li>Contabilidad de partida doble</li>
+      </ul>
+    </div>
+    <figure class="split-visual">
+      <img [src]="heroBg" alt="Contabilidad e inventario integrados en un solo lugar" />
+      <figcaption>Operacion y finanzas en un solo flujo</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="contacto" class="section">
+  <h2>Contacto</h2>
+  <div class="contact-grid">
+    @if (company().address) { <p><strong>Direccion:</strong> {{ company().address }}</p> }
+    @if (company().phone) { <p><strong>Telefono:</strong> {{ company().phone }}</p> }
+    @if (company().email) { <p><strong>Email:</strong> {{ company().email }}</p> }
+    @if (company().taxId) { <p><strong>NIT:</strong> {{ company().taxId }}</p> }
+  </div>
+</section>
+
+<footer class="footer">
+  <app-brand-logo variant="white" size="md" />
+  <p>El nexo entre su contabilidad e inventario</p>
+</footer>

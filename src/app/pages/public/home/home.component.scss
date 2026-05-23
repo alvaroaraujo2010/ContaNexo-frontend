@@ -1,0 +1,234 @@
+.hero {
+  position: relative;
+  min-height: 85vh;
+  color: #fff;
+  padding: 1.5rem 2rem 4rem;
+  background:
+    linear-gradient(120deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 58, 95, 0.85) 42%, rgba(14, 165, 233, 0.72) 100%),
+    url('/images/hero-bg.jpg') center center / cover no-repeat;
+  background-color: #0f172a;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto 2.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex: 1 1 auto;
+  min-width: 0;
+
+  app-brand-logo ::ng-deep .brand-logo--xl {
+    height: 125px;
+    max-width: min(720px, 86vw);
+    width: auto;
+  }
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  a { color: #e2e8f0; text-decoration: none; &:hover { color: #fff; } }
+}
+
+.btn-admin {
+  background: rgba(255,255,255,0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.hero-content {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  h1 { font-size: 3rem; margin: 0.5rem 0; }
+  .tagline { font-size: 1.35rem; color: #bae6fd; }
+  .desc { color: #cbd5e1; line-height: 1.6; }
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(14,165,233,0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.hero .actions .btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 2px solid transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+
+  &.primary {
+    background: #0ea5e9;
+    color: #0f172a;
+    border-color: #0ea5e9;
+    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.45);
+
+    &:hover {
+      background: #38bdf8;
+      border-color: #38bdf8;
+      color: #0f172a;
+      filter: none;
+    }
+  }
+
+  &.secondary {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: #fff;
+
+    &:hover {
+      background: #fff;
+      color: #0f172a;
+      border-color: #fff;
+      filter: none;
+    }
+  }
+}
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  &.alt { background: #f8fafc; max-width: 100%; }
+}
+
+.section-sub { color: #64748b; margin-bottom: 2rem; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(15,23,42,0.08);
+  .icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #e0f2fe 0%, #bae6fd 100%);
+    color: #0369a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+  }
+
+  h3 {
+    margin: 0 0 0.5rem;
+    color: #0f172a;
+    font-size: 1.15rem;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.55;
+    font-size: 0.95rem;
+  }
+}
+
+.split {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  ul { line-height: 2; color: #475569; }
+}
+
+.split-visual {
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+  }
+
+  figcaption {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    color: #64748b;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
+
+.stats {
+  display: grid;
+  gap: 1rem;
+}
+
+.stat {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  strong { display: block; font-size: 2rem; color: #0ea5e9; }
+  span { color: #64748b; }
+}
+
+.contact-grid p { margin: 0.5rem 0; color: #475569; }
+
+.footer {
+  background: #0f172a;
+  color: #94a3b8;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .split { grid-template-columns: 1fr; }
+  .hero-content h1 { font-size: 2rem; }
+  .links { display: none; }
+
+  .brand app-brand-logo ::ng-deep .brand-logo--xl {
+    height: 92px;
+    max-width: min(520px, 92vw);
+  }
+}

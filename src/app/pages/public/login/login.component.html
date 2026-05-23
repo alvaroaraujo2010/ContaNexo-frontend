@@ -1,0 +1,31 @@
+<div class="login-page">
+  <aside class="login-visual" aria-hidden="true">
+    <div class="login-visual__inner">
+      <app-brand-logo variant="white" size="lg" />
+      <p class="login-visual__tagline">El nexo entre su contabilidad e inventario</p>
+      <p class="login-visual__hint">Gestione inventario, ventas, compras y contabilidad desde un solo panel.</p>
+    </div>
+  </aside>
+
+  <div class="panel">
+    <a routerLink="/" class="brand">
+      <app-brand-logo variant="black" size="full" />
+    </a>
+    <h1>Zona administrativa</h1>
+    <p class="sub">Ingrese sus credenciales para acceder al sistema</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>Nombre de usuario</label>
+      <input type="text" formControlName="username" placeholder="administrador" autocomplete="username" />
+
+      <label>Contrasena</label>
+      <input type="password" formControlName="password" placeholder="********" />
+
+      <button type="submit" [disabled]="loading || form.invalid">
+        {{ loading ? 'Ingresando...' : 'Iniciar sesion' }}
+      </button>
+    </form>
+
+    <a routerLink="/" class="back">Volver al sitio publico</a>
+  </div>
+</div>
