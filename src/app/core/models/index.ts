@@ -103,7 +103,34 @@ export interface Sale {
   paymentMethod: string;
   status: string;
   notes?: string;
+  electronicInvoiceStatus: string;
+  electronicInvoiceNumber?: string;
+  cufe?: string;
+  electronicInvoiceIssuedAt?: string;
   details: { productId: number; productName: string; quantity: number; unitPrice: number; lineTotal: number }[];
+}
+
+export interface ElectronicInvoice {
+  saleId: number;
+  documentNumber: string;
+  electronicInvoiceNumber?: string;
+  electronicInvoiceStatus: string;
+  cufe?: string;
+  issuedAt?: string;
+  issuerName: string;
+  issuerTaxId?: string;
+  issuerAddress?: string;
+  issuerPhone?: string;
+  issuerEmail?: string;
+  customerName: string;
+  customerTaxId?: string;
+  saleDate: string;
+  paymentMethod: string;
+  subtotal: number;
+  tax: number;
+  taxRate: number;
+  total: number;
+  lines: { description: string; quantity: number; unitPrice: number; lineTotal: number }[];
 }
 
 export interface InventoryMovement {

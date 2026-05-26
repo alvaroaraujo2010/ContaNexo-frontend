@@ -83,9 +83,17 @@
     </section>
   }
 
-  @if (tab === 'trial' && trial(); as trial) {
-    <section class="data-card">
-      <div class="data-card__head"><h2>Balance de prueba</h2><span>{{ trial.lines.length }} cuenta(s)</span></div>
+  @if (tab === 'trial') {
+  <section class="data-card">
+    <div class="data-card__head">
+      <h2>Balance de prueba</h2>
+      <button class="btn sm" type="button" (click)="loadTrial()">Actualizar</button>
+    </div>
+    <p class="trial-hint">
+      Resume debitos, creditos y saldo por cuenta segun los asientos registrados.
+      Al emitir una factura electronica en Ventas se genera un asiento automatico.
+    </p>
+    @if (trial(); as trial) {
       <table class="data">
         <thead><tr><th>Codigo</th><th>Cuenta</th><th>Tipo</th><th>Debito</th><th>Credito</th><th>Saldo</th></tr></thead>
         <tbody>
@@ -98,9 +106,34 @@
               <td>{{ l.credit | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
               <td>{{ l.balance | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
             </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <strong>Sin movimientos en el balance</strong>
+                  <p>Emita una factura electronica en Ventas o registre un asiento en la pestana Asientos.</p>
+                </div>
+              </td>
+            </tr>
           }
         </tbody>
+        <tfoot>
+          <tr class="trial-total">
+            <td colspan="3"><strong>Totales</strong></td>
+            <td><strong>{{ trial.totalDebit | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+            <td><strong>{{ trial.totalCredit | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
-    </section>
+      @if (trial.totalDebit !== trial.totalCredit) {
+        <p class="trial-warn">Los totales no cuadran: revise los asientos de partida doble.</p>
+      } @else if (trial.lines.length) {
+        <p class="trial-ok">Balance cuadrado: debitos = creditos.</p>
+      }
+    } @else {
+      <p class="trial-hint">Cargando balance...</p>
+    }
+  </section>
   }
 </div>
