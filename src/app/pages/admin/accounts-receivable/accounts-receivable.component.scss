@@ -1,0 +1,218 @@
+.accounts-receivable-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 16px;
+    color: #999;
+  }
+
+  .content {
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+
+      .summary-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #2196f3;
+
+        label {
+          display: block;
+          font-weight: 500;
+          color: #666;
+          margin-bottom: 10px;
+          font-size: 12px;
+          text-transform: uppercase;
+        }
+
+        .amount {
+          font-size: 28px;
+          font-weight: bold;
+          display: block;
+          margin-bottom: 5px;
+
+          &.primary {
+            color: #2196f3;
+          }
+
+          &.paid {
+            color: #2e7d32;
+          }
+
+          &.pending {
+            color: #f57c00;
+          }
+
+          &.overdue {
+            color: #d32f2f;
+          }
+        }
+
+        small {
+          display: block;
+          color: #999;
+          font-size: 12px;
+
+          &.warning {
+            color: #d32f2f;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+    .filters {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+
+        select {
+          padding: 8px 12px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          min-width: 200px;
+
+          &:focus {
+            outline: none;
+            border-color: #2196f3;
+          }
+        }
+      }
+    }
+
+    .table-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: auto;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        thead {
+          background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+
+          th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+            font-size: 13px;
+            text-transform: uppercase;
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+
+            &:hover {
+              background-color: #f9f9f9;
+            }
+
+            &.overdue {
+              td {
+                background-color: #fff3e0;
+
+                &.amount {
+                  color: #d32f2f;
+                }
+              }
+            }
+
+            td {
+              padding: 12px;
+              color: #555;
+              font-size: 14px;
+
+              &.doc-number {
+                font-weight: 600;
+                color: #2196f3;
+              }
+
+              &.amount {
+                font-weight: 500;
+                color: #333;
+                text-align: right;
+
+                &.paid {
+                  color: #2e7d32;
+                }
+
+                &.pending {
+                  color: #f57c00;
+                }
+              }
+
+              &.overdue {
+                color: #d32f2f;
+                font-weight: 600;
+
+                small {
+                  display: block;
+                  font-size: 11px;
+                  margin-top: 2px;
+                }
+              }
+
+              .status {
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 12px;
+                color: white;
+                font-size: 12px;
+                font-weight: 600;
+              }
+
+              &.actions {
+                display: flex;
+                gap: 8px;
+
+                button {
+                  padding: 6px 10px;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  transition: all 0.2s;
+
+                  &:hover {
+                    background-color: #e3f2fd;
+                    border-color: #2196f3;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+        font-size: 14px;
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+<div class="reminders-container">
+  <app-module-header title="Recordatorios de Cobro"></app-module-header>
+
+  <div class="filters">
+    <label>
+      Filtrar por Estado:
+      <select (change)="filterStatus.set($any($event.target).value)">
+        <option value="">Todos</option>
+        <option value="pending">Pendiente</option>
+        <option value="sent">Enviado</option>
+        <option value="acknowledged">Reconocido</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Factura</th>
+          <th>Cliente</th>
+          <th>Tipo de Recordatorio</th>
+          <th>Días Vencido</th>
+          <th>Monto Pendiente</th>
+          <th>Fecha Envío</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let reminder of getFilteredReminders()">
+          <td class="doc-number">{{ reminder.invoiceNumber }}</td>
+          <td>{{ reminder.customerName }}</td>
+          <td>
+            <span class="reminder-type" [ngClass]="'reminder-' + reminder.reminderType">
+              {{ reminder.reminderType | uppercase }}
+            </span>
+          </td>
+          <td>
+            <span class="overdue" *ngIf="reminder.daysOverdue > 0">
+              {{ reminder.daysOverdue }} días
+            </span>
+          </td>
+          <td class="amount">${{ reminder.amountPending | number: '1.2-2' }}</td>
+          <td>{{ reminder.sentDate || 'No enviado' }}</td>
+          <td>
+            <span class="status" [ngClass]="reminder.status">
+              {{ reminder.status | uppercase }}
+            </span>
+          </td>
+          <td class="actions">
+            <button *ngIf="reminder.status === 'pending'" (click)="sendReminder(reminder)">
+              ✉️ Enviar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="getFilteredReminders().length === 0" class="empty-message">No hay recordatorios</p>
+  </div>
+</div>

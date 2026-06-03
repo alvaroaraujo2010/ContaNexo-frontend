@@ -9,7 +9,19 @@ body {
 }
 
 /* —— Página de módulo admin —— */
-.module-page {
+.module-page,
+.page,
+.payroll-page,
+.employees-page,
+.deductions-container,
+.social-security-container,
+.payment-records-container,
+.accounts-receivable-container,
+.invoice-detail-container,
+.payment-plan-container,
+.payment-tracking-container,
+.reminders-container,
+.reports-container {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;

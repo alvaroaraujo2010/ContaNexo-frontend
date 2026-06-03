@@ -1,0 +1,158 @@
+<div class="invoice-detail-container">
+  <header class="header">
+    <h1>Detalles de Factura</h1>
+    <button class="back-btn" (click)="goBack()">← Volver</button>
+  </header>
+
+  <div *ngIf="loading()" class="loading">Cargando...</div>
+
+  <div *ngIf="!loading() && invoice()" class="detail-content">
+    <!-- Información Principal -->
+    <div class="invoice-header">
+      <div class="invoice-info">
+        <div class="info-item">
+          <label>Factura:</label>
+          <span class="doc-number">{{ invoice()!.documentNumber }}</span>
+        </div>
+        <div class="info-item">
+          <label>Cliente:</label>
+          <span>{{ invoice()!.customerName }}</span>
+        </div>
+        <div class="info-item">
+          <label>Fecha:</label>
+          <span>{{ invoice()!.invoiceDate }}</span>
+        </div>
+        <div class="info-item">
+          <label>Vencimiento:</label>
+          <span [ngClass]="{ overdue: invoice()!.status === 'overdue' }">
+            {{ invoice()!.dueDate }}
+          </span>
+        </div>
+      </div>
+
+      <div class="invoice-totals">
+        <div class="total-item">
+          <label>Total Factura:</label>
+          <span class="amount">${{ invoice()!.total | number: '1.2-2' }}</span>
+        </div>
+        <div class="total-item">
+          <label>Cobrado:</label>
+          <span class="amount paid">${{ invoice()!.amountPaid | number: '1.2-2' }}</span>
+        </div>
+        <div class="total-item">
+          <label>Pendiente:</label>
+          <span class="amount pending">${{ invoice()!.amountPending | number: '1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="status-badge" [ngClass]="invoice()!.status">
+        <span>{{ invoice()!.status | uppercase }}</span>
+      </div>
+    </div>
+
+    <!-- Barra de Progreso -->
+    <div class="progress-section">
+      <label>Progreso de Cobro:</label>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getPaymentPercentage()"></div>
+      </div>
+      <span class="progress-text">{{ getPaymentPercentage() | number: '0.0-0' }}% cobrado</span>
+    </div>
+
+    <!-- Detalles de la Factura -->
+    <div class="invoice-items">
+      <h2>Items de Factura</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detail of invoice()!.details">
+            <td>{{ detail.productName }}</td>
+            <td>{{ detail.quantity }}</td>
+            <td>${{ detail.unitPrice | number: '1.2-2' }}</td>
+            <td>${{ detail.lineTotal | number: '1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Historial de Pagos -->
+    <div class="payment-history">
+      <h2>Historial de Pagos</h2>
+      <div *ngIf="payments().length === 0" class="no-data">
+        No hay pagos registrados
+      </div>
+      <table *ngIf="payments().length > 0">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Método</th>
+            <th>Referencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let payment of payments()">
+            <td>{{ payment.paymentDate }}</td>
+            <td>${{ payment.amount | number: '1.2-2' }}</td>
+            <td>{{ payment.paymentMethod | uppercase }}</td>
+            <td>{{ payment.reference || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Planes de Pago -->
+    <div class="payment-plans-section">
+      <h2>Planes de Pago</h2>
+      <div *ngIf="paymentPlans().length === 0" class="no-data">
+        No hay planes de pago
+      </div>
+      <div *ngFor="let plan of paymentPlans()" class="plan-card">
+        <div class="plan-header">
+          <span>Plan: {{ plan.numberOfInstallments }} cuotas de ${{ plan.installmentAmount | number: '1.2-2' }}</span>
+          <span class="status" [ngClass]="plan.status">{{ plan.status }}</span>
+        </div>
+        <table class="installments-table">
+          <thead>
+            <tr>
+              <th>Cuota</th>
+              <th>Fecha</th>
+              <th>Monto</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let inst of plan.installments">
+              <td>#{{ inst.number }}</td>
+              <td>{{ inst.dueDate }}</td>
+              <td>${{ inst.amount | number: '1.2-2' }}</td>
+              <td>
+                <span class="inst-status" [ngClass]="inst.status">
+                  {{ inst.status === 'paid' ? 'Pagada' : 'Pendiente' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="actions">
+      <button class="btn-primary" (click)="recordPayment()" [disabled]="invoice()!.status === 'paid'">
+        Registrar Pago
+      </button>
+      <button class="btn-secondary" (click)="createPaymentPlan()" [disabled]="invoice()!.status === 'paid'">
+        Crear Plan de Pago
+      </button>
+      <button class="btn-secondary" (click)="goBack()">Cancelar</button>
+    </div>
+  </div>
+</div>

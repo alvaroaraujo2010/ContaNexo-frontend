@@ -1,0 +1,165 @@
+.reminders-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .header {
+    margin-bottom: 20px;
+
+    h1 {
+      margin: 0;
+      color: #333;
+    }
+  }
+
+  .filters {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+
+      select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+
+        &:focus {
+          outline: none;
+          border-color: #2196f3;
+        }
+      }
+    }
+  }
+
+  .table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        background-color: #f0f0f0;
+
+        th {
+          padding: 12px;
+          text-align: left;
+          font-weight: 600;
+          border-bottom: 2px solid #ddd;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid #eee;
+
+          &:hover {
+            background-color: #f9f9f9;
+          }
+
+          td {
+            padding: 12px;
+            color: #555;
+
+            &.doc-number {
+              font-weight: 600;
+              color: #2196f3;
+            }
+
+            .reminder-type {
+              display: inline-block;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              font-weight: 600;
+              color: white;
+
+              &.reminder-first {
+                background-color: #4caf50;
+              }
+
+              &.reminder-second {
+                background-color: #ff9800;
+              }
+
+              &.reminder-third {
+                background-color: #f57c00;
+              }
+
+              &.reminder-final {
+                background-color: #d32f2f;
+              }
+            }
+
+            .overdue {
+              color: #d32f2f;
+              font-weight: 600;
+            }
+
+            &.amount {
+              font-weight: 600;
+              color: #f57c00;
+            }
+
+            .status {
+              display: inline-block;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              font-weight: 600;
+
+              &.pending {
+                background-color: #fff3e0;
+                color: #e65100;
+              }
+
+              &.sent {
+                background-color: #c8e6c9;
+                color: #2e7d32;
+              }
+
+              &.acknowledged {
+                background-color: #b3e5fc;
+                color: #0277bd;
+              }
+            }
+
+            &.actions {
+              display: flex;
+              gap: 8px;
+
+              button {
+                padding: 6px 10px;
+                background: none;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+
+                &:hover {
+                  background-color: #f0f0f0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+  }
+}

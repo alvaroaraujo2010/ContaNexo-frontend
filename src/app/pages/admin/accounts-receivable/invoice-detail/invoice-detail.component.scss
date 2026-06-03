@@ -1,0 +1,396 @@
+.invoice-detail-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      margin: 0;
+      color: #333;
+    }
+
+    .back-btn {
+      padding: 8px 16px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #d0d0d0;
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+  }
+
+  .detail-content {
+    .invoice-header {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+      position: relative;
+
+      .invoice-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+
+        .info-item {
+          display: flex;
+          flex-direction: column;
+
+          label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 4px;
+            font-size: 12px;
+          }
+
+          span {
+            font-size: 16px;
+            color: #333;
+
+            &.doc-number {
+              font-weight: 600;
+              color: #2196f3;
+            }
+
+            &.overdue {
+              color: #d32f2f;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+
+      .invoice-totals {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .total-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px;
+          background-color: #f9f9f9;
+          border-radius: 4px;
+
+          label {
+            font-weight: 500;
+            color: #666;
+            font-size: 13px;
+          }
+
+          .amount {
+            font-weight: bold;
+            color: #2196f3;
+            font-size: 18px;
+
+            &.paid {
+              color: #2e7d32;
+            }
+
+            &.pending {
+              color: #f57c00;
+            }
+          }
+        }
+      }
+
+      .status-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+
+        &.unpaid {
+          background-color: #f57c00;
+        }
+
+        &.partially_paid {
+          background-color: #fbc02d;
+          color: #333;
+        }
+
+        &.paid {
+          background-color: #2e7d32;
+        }
+
+        &.overdue {
+          background-color: #d32f2f;
+        }
+      }
+    }
+
+    .progress-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 30px;
+        background-color: #e0e0e0;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 8px;
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #4caf50, #2e7d32);
+          transition: width 0.3s ease;
+        }
+      }
+
+      .progress-text {
+        display: block;
+        text-align: center;
+        font-weight: 600;
+        color: #2e7d32;
+      }
+    }
+
+    .invoice-items {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      h2 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 16px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        thead {
+          background-color: #f0f0f0;
+
+          th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid #eee;
+
+            td {
+              padding: 12px;
+              color: #555;
+            }
+          }
+        }
+      }
+    }
+
+    .payment-history,
+    .payment-plans-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      h2 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 16px;
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 20px;
+        color: #999;
+        font-size: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        thead {
+          background-color: #f0f0f0;
+
+          th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid #eee;
+
+            td {
+              padding: 12px;
+              color: #555;
+            }
+          }
+        }
+      }
+    }
+
+    .payment-plans-section {
+      .plan-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+
+        .plan-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          font-weight: 600;
+
+          .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+
+            &.active {
+              background-color: #4caf50;
+            }
+
+            &.completed {
+              background-color: #2e7d32;
+            }
+
+            &.cancelled {
+              background-color: #999;
+            }
+          }
+        }
+
+        .installments-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 13px;
+
+          thead {
+            background-color: #f5f5f5;
+
+            th {
+              padding: 8px;
+              text-align: left;
+              font-weight: 500;
+              border-bottom: 1px solid #ddd;
+            }
+          }
+
+          tbody {
+            tr {
+              border-bottom: 1px solid #eee;
+
+              td {
+                padding: 8px;
+
+                .inst-status {
+                  display: inline-block;
+                  padding: 3px 6px;
+                  border-radius: 3px;
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: white;
+
+                  &.paid {
+                    background-color: #2e7d32;
+                  }
+
+                  &.pending {
+                    background-color: #f57c00;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+
+        &.btn-primary {
+          background-color: #2196f3;
+          color: white;
+
+          &:hover:not(:disabled) {
+            background-color: #1976d2;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        &.btn-secondary {
+          background-color: #e0e0e0;
+          color: #333;
+
+          &:hover:not(:disabled) {
+            background-color: #d0d0d0;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+}

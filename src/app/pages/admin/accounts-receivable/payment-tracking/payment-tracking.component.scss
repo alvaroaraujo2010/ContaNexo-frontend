@@ -1,0 +1,203 @@
+.payment-tracking-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .header {
+    margin-bottom: 20px;
+
+    h1 {
+      margin: 0;
+      color: #333;
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+  }
+
+  .form-content {
+    max-width: 600px;
+    margin: 0 auto;
+
+    .invoice-summary {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+
+      .summary-item {
+        display: flex;
+        flex-direction: column;
+
+        label {
+          font-weight: 600;
+          color: #666;
+          margin-bottom: 4px;
+          font-size: 12px;
+        }
+
+        span {
+          font-size: 16px;
+          color: #333;
+
+          &.doc-number {
+            font-weight: 600;
+            color: #2196f3;
+          }
+
+          &.amount {
+            font-weight: bold;
+
+            &.paid {
+              color: #2e7d32;
+            }
+
+            &.pending {
+              color: #f57c00;
+            }
+          }
+        }
+
+        &.highlight {
+          background-color: #fff3e0;
+          padding: 12px;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    .payment-form {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      .form-group {
+        margin-bottom: 16px;
+
+        label {
+          display: block;
+          margin-bottom: 6px;
+          font-weight: 500;
+          color: #333;
+          font-size: 14px;
+        }
+
+        input,
+        select {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-family: inherit;
+          font-size: 14px;
+          box-sizing: border-box;
+
+          &:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+          }
+        }
+
+        small {
+          display: block;
+          font-size: 12px;
+          margin-top: 4px;
+          color: #d32f2f;
+
+          &.error {
+            color: #d32f2f;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 24px;
+
+        button {
+          padding: 12px 24px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+
+          &.btn-primary {
+            background-color: #2196f3;
+            color: white;
+            flex: 1;
+
+            &:hover:not(:disabled) {
+              background-color: #1976d2;
+            }
+
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+          }
+
+          &.btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+            flex: 1;
+
+            &:hover {
+              background-color: #d0d0d0;
+            }
+          }
+        }
+      }
+    }
+
+    .confirmation-section {
+      background: #e3f2fd;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #2196f3;
+
+      h3 {
+        margin: 0 0 15px 0;
+        color: #1565c0;
+        font-size: 14px;
+      }
+
+      .confirmation-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .conf-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px;
+          background-color: white;
+          border-radius: 4px;
+
+          span {
+            color: #333;
+
+            &.amount {
+              font-weight: bold;
+              color: #2e7d32;
+            }
+          }
+        }
+      }
+    }
+  }
+}

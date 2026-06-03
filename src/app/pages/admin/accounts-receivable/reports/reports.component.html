@@ -1,0 +1,125 @@
+<div class="reports-container">
+  <app-module-header title="Reportes de Cuentas por Cobrar"></app-module-header>
+
+  <div *ngIf="loading()" class="loading">Cargando...</div>
+
+  <div *ngIf="!loading()" class="reports-content">
+    <!-- Resumen General -->
+    <div *ngIf="summary()" class="summary-section">
+      <h2>Resumen General</h2>
+      <div class="summary-grid">
+        <div class="card">
+          <label>Total a Cobrar:</label>
+          <span class="amount">${{ summary()!.totalAmount | number: '1.2-2' }}</span>
+        </div>
+        <div class="card">
+          <label>Total Cobrado:</label>
+          <span class="amount paid">${{ summary()!.totalPaid | number: '1.2-2' }}</span>
+        </div>
+        <div class="card">
+          <label>Pendiente:</label>
+          <span class="amount pending">${{summary()!.totalPending | number: '1.2-2' }}</span>
+        </div>
+        <div class="card">
+          <label>Vencido:</label>
+          <span class="amount overdue">${{summary()!.overduAmount | number: '1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reporte de Antigüedad -->
+    <div *ngIf="agingReport()" class="aging-report">
+      <div class="report-header">
+        <h2>Reporte de Antigüedad de Cartera</h2>
+        <button (click)="downloadAgingReport()" class="download-btn">📥 Descargar</button>
+      </div>
+
+      <div class="aging-summary-grid">
+        <div class="aging-card current">
+          <label>Vigente:</label>
+          <span class="amount">${{ agingReport()!.totalCurrent | number: '1.2-2' }}</span>
+        </div>
+        <div class="aging-card days30">
+          <label>30 días:</label>
+          <span class="amount">${{ agingReport()!.totalDays30 | number: '1.2-2' }}</span>
+        </div>
+        <div class="aging-card days60">
+          <label>60 días:</label>
+          <span class="amount">${{ agingReport()!.totalDays60 | number: '1.2-2' }}</span>
+        </div>
+        <div class="aging-card days90">
+          <label>90 días:</label>
+          <span class="amount">${{agingReport()!.totalDays90 | number: '1.2-2' }}</span>
+        </div>
+        <div class="aging-card over90">
+          <label>Más de 90 días:</label>
+          <span class="amount">${{agingReport()!.totalOver90 | number: '1.2-2' }}</span>
+        </div>
+      </div>
+
+      <table class="aging-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Vigente</th>
+            <th>30 Días</th>
+            <th>60 Días</th>
+            <th>90 Días</th>
+            <th>Más de 90</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let line of agingReport()!.lines">
+            <td class="customer-name">{{ line.customerName }}</td>
+            <td class="amount">${{ line.current | number: '1.2-2' }}</td>
+            <td class="amount">${{line.days30 | number: '1.2-2' }}</td>
+            <td class="amount">${{line.days60 | number: '1.2-2' }}</td>
+            <td class="amount">${{line.days90 | number: '1.2-2' }}</td>
+            <td class="amount overdue">${{line.daysOver90 | number: '1.2-2' }}</td>
+            <td class="total-amount">${{line.total | number: '1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Clientes Morosos -->
+    <div *ngIf="summary()" class="overdue-customers">
+      <div class="report-header">
+        <h2>Clientes Morosos</h2>
+        <button (click)="downloadOverdueReport()" class="download-btn">📥 Descargar</button>
+      </div>
+
+      <div *ngIf="summary()!.byCustomer.filter(c => c.daysOverdue > 0).length === 0" class="no-overdue">
+        No hay clientes con cartera vencida en este momento.
+      </div>
+
+      <table *ngIf="summary()!.byCustomer.filter(c => c.daysOverdue > 0).length > 0" class="overdue-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Monto Total</th>
+            <th>Monto Pendiente</th>
+            <th>Días Vencido</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of summary()!.byCustomer.filter(c => c.daysOverdue > 0)" [ngClass]="'overdue-' + (customer.daysOverdue > 90 ? 'critical' : customer.daysOverdue > 60 ? 'high' : 'medium')">
+            <td class="customer-name">{{ customer.customerName }}</td>
+            <td class="amount">${{ customer.totalAmount | number: '1.2-2' }}</td>
+            <td class="amount pending">${{customer.amountPending | number: '1.2-2' }}</td>
+            <td class="days">
+              <span class="days-badge">{{ customer.daysOverdue }} días</span>
+            </td>
+            <td>
+              <span class="status" [ngClass]="customer.daysOverdue > 90 ? 'critical' : customer.daysOverdue > 60 ? 'high' : 'medium'">
+                {{ customer.daysOverdue > 90 ? 'CRÍTICO' : customer.daysOverdue > 60 ? 'ALTO' : 'MEDIO' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

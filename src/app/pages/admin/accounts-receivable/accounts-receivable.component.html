@@ -1,0 +1,92 @@
+<div class="accounts-receivable-container">
+  <app-module-header 
+    title="Cuentas por Cobrar"
+  ></app-module-header>
+
+  <div *ngIf="loading()" class="loading">Cargando...</div>
+
+  <div *ngIf="!loading()" class="content">
+    <!-- Resumen -->
+    <div *ngIf="summary()" class="summary-grid">
+      <div class="summary-card">
+        <label>Total a Cobrar:</label>
+        <span class="amount primary">${{ summary()!.totalAmount | number: '1.2-2' }}</span>
+        <small>{{ summary()!.totalInvoices }} facturas</small>
+      </div>
+      <div class="summary-card">
+        <label>Total Cobrado:</label>
+        <span class="amount paid">${{ summary()!.totalPaid | number: '1.2-2' }}</span>
+      </div>
+      <div class="summary-card">
+        <label>Pendiente de Cobro:</label>
+        <span class="amount pending">${{ summary()!.totalPending | number: '1.2-2' }}</span>
+      </div>
+      <div class="summary-card">
+        <label>Vencido:</label>
+        <span class="amount overdue">${{ summary()!.overduAmount | number: '1.2-2' }}</span>
+        <small *ngIf="summary()!.overduAmount > 0" class="warning">
+          ⚠️ {{ summary()!.overdueDays }} días de atraso
+        </small>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <label>
+        Filtrar por Estado:
+        <select (change)="filterStatus.set($any($event.target).value)">
+          <option value="">Todos</option>
+          <option value="unpaid">Sin Cobrar</option>
+          <option value="partially_paid">Parcialmente Cobrada</option>
+          <option value="paid">Cobrada</option>
+          <option value="overdue">Vencida</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Tabla de Facturas -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Factura</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Cobrado</th>
+            <th>Pendiente</th>
+            <th>Estado</th>
+            <th>Vencimiento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let invoice of getFilteredInvoices()" [ngClass]="invoice.status">
+            <td class="doc-number">{{ invoice.documentNumber }}</td>
+            <td>{{ invoice.customerName }}</td>
+            <td>{{ invoice.invoiceDate }}</td>
+            <td class="amount">${{ invoice.total | number: '1.2-2' }}</td>
+            <td class="amount paid">${{ invoice.amountPaid | number: '1.2-2' }}</td>
+            <td class="amount pending">${{ invoice.amountPending | number: '1.2-2' }}</td>
+            <td>
+              <span class="status" [style.backgroundColor]="getStatusColor(invoice.status)">
+                {{ getStatusLabel(invoice.status) }}
+              </span>
+            </td>
+            <td [ngClass]="invoice.status === 'overdue' ? 'overdue' : ''">
+              {{ invoice.dueDate }}
+              <small *ngIf="invoice.status === 'overdue'">
+                ({{ getDaysOverdue(invoice.dueDate) }} días)
+              </small>
+            </td>
+            <td class="actions">
+              <button (click)="viewDetails(invoice)" title="Ver detalles">👁️</button>
+              <button *ngIf="invoice.status !== 'paid'" (click)="recordPayment(invoice)" title="Registrar pago">💰</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="getFilteredInvoices().length === 0" class="empty-message">No hay facturas para mostrar</p>
+    </div>
+  </div>
+</div>

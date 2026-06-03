@@ -1,0 +1,91 @@
+<div class="payment-plan-container">
+  <header class="header">
+    <h1>Crear Plan de Pago</h1>
+  </header>
+
+  <div *ngIf="loading()" class="loading">Cargando...</div>
+
+  <div *ngIf="!loading() && invoice()" class="form-content">
+    <div class="invoice-info">
+      <h3>Factura: {{ invoice()!.documentNumber }}</h3>
+      <p>Cliente: {{ invoice()!.customerName }}</p>
+      <p class="amount-info">
+        Monto Pendiente: <span class="amount">${{ invoice()!.amountPending | number: '1.2-2' }}</span>
+      </p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="payment-plan-form">
+      <div class="form-group">
+        <label for="numberOfInstallments">Número de Cuotas:</label>
+        <input 
+          id="numberOfInstallments" 
+          type="number" 
+          formControlName="numberOfInstallments"
+          min="2"
+          max="24"
+          (change)="onInstallmentsChange()"
+        />
+        <small>Entre 2 y 24 cuotas</small>
+      </div>
+
+      <div class="form-group">
+        <label for="startDate">Fecha de Inicio:</label>
+        <input 
+          id="startDate" 
+          type="date" 
+          formControlName="startDate"
+          (change)="onInstallmentsChange()"
+        />
+      </div>
+
+      <div class="installments-section">
+        <h3>Cuotas Generadas:</h3>
+        <div class="installments-table-container">
+          <table formArrayName="installments">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Fecha Vencimiento</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inst of getInstallmentsArray().controls; let i = index" [formGroupName]="i">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <input type="date" formControlName="dueDate" readonly />
+                </td>
+                <td>
+                  <input 
+                    type="number" 
+                    formControlName="amount" 
+                    step="0.01"
+                    placeholder="0.00"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="total-row">
+          <span>Total de Cuotas:</span>
+          <span class="total-amount">${{ getTotalInstallments() | number: '1.2-2' }}</span>
+        </div>
+
+        <div *ngIf="getTotalInstallments() !== invoice()!.amountPending" class="warning">
+          ⚠️ El total de cuotas no coincide con el monto pendiente
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || saving || getTotalInstallments() !== invoice()!.amountPending">
+          {{ saving ? 'Guardando...' : 'Crear Plan de Pago' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancel()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
