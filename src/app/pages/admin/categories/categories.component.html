@@ -1,5 +1,5 @@
 <div class="module-page">
-  <app-module-header title="Categorias" subtitle="Organice el catalogo por familias de productos" badge="Inventario">
+  <app-module-header title="Categorías" subtitle="Organice el catálogo por familias de productos" badge="Inventario">
     <button class="btn" type="button" (click)="showForm = !showForm">{{ showForm ? 'Cancelar' : 'Nueva categoria' }}</button>
   </app-module-header>
 
@@ -10,16 +10,16 @@
       </div>
       <div class="form-grid">
         <label>Nombre<input formControlName="name" /></label>
-        <label class="full">Descripcion<input formControlName="description" /></label>
+        <label class="full">Descripción<input formControlName="description" /></label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit">{{ editingId ? 'Actualizar' : 'Guardar' }}</button></div>
     </form>
   }
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Listado de categorias</h2><span>{{ items().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Listado de categorías</h2><span>{{ items().length }} registro(s)</span></div>
     <table class="data">
-      <thead><tr><th>Nombre</th><th>Descripcion</th><th>Productos</th><th>Estado</th><th></th></tr></thead>
+      <thead><tr><th>Nombre</th><th>Descripción</th><th>Productos</th><th>Estado</th><th></th></tr></thead>
       <tbody>
         @for (c of items(); track c.id) {
           <tr>
@@ -30,7 +30,7 @@
             <td><button class="btn sm" type="button" (click)="edit(c)">Editar</button></td>
           </tr>
         } @empty {
-          <tr><td colspan="5"><div class="empty-state"><strong>Sin categorias</strong><p>Cree categorias para clasificar productos.</p></div></td></tr>
+          <tr><td colspan="5"><div class="empty-state"><strong>Sin categorías</strong><p>Cree categorías para clasificar productos.</p></div></td></tr>
         }
       </tbody>
     </table>

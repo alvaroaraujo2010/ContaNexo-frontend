@@ -48,7 +48,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       : this.api.post('categories', body);
     this.api
       .run(req, {
-        success: this.editingId ? 'Categoria actualizada' : 'Categoria creada',
+        success: this.editingId ? 'Categoría actualizada' : 'Categoría creada',
         error: 'No se pudo guardar la categoria'
       })
       .subscribe({

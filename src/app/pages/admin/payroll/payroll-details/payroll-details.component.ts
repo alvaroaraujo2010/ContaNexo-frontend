@@ -30,6 +30,10 @@ export class PayrollDetailsComponent implements OnInit {
     details: this.fb.array([])
   });
 
+  get detailsForm(): FormArray {
+    return this.form.controls.details as FormArray;
+  }
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) this.loadData(parseInt(id));
@@ -41,12 +45,13 @@ export class PayrollDetailsComponent implements OnInit {
       next: (payroll) => {
         this.payroll.set(payroll);
         if (payroll.details?.length > 0) this.selectedDetail.set(payroll.details[0]);
+        this.rebuildDraftForm();
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
     });
     this.payrollService.getEmployees().subscribe({
-      next: data => this.employees.set(data)
+      next: data => { this.employees.set(data); this.rebuildDraftForm(); }
     });
     this.payrollService.getDeductions().subscribe({
       next: data => this.deductions.set(data)
@@ -55,10 +60,55 @@ export class PayrollDetailsComponent implements OnInit {
 
   selectDetail(d: PayrollDetail) { this.selectedDetail.set(d); }
 
+  rebuildDraftForm() {
+    const p = this.payroll();
+    const employees = this.employees();
+    if (!p || p.status !== 'draft' || employees.length === 0) return;
+
+    this.detailsForm.clear();
+    const existing = new Map((p.details ?? []).map(d => [d.employeeId, d]));
+    employees.filter(e => e.isActive).forEach(emp => {
+      const detail = existing.get(emp.id);
+      const otherDeductions = (detail?.deductions ?? [])
+        .filter(d => d.category === 'other')
+        .reduce((sum, d) => sum + (d.amount ?? 0), 0);
+
+      this.detailsForm.push(this.fb.group({
+        employeeId: [emp.id, Validators.required],
+        employeeName: [emp.name, Validators.required],
+        baseSalary: [detail?.baseSalary ?? emp.baseSalary ?? 0, [Validators.required, Validators.min(0)]],
+        variableIncome: [detail?.variableIncome ?? 0, [Validators.min(0)]],
+        additionalDeduction: [otherDeductions, [Validators.min(0)]],
+      }));
+    });
+  }
+
+  saveDraftDetails() {
+    const p = this.payroll();
+    if (!p || this.form.invalid || this.saving) return;
+    this.saving = true;
+    const details = this.detailsForm.getRawValue().map((d: any) => ({
+      employeeId: d.employeeId,
+      employeeName: d.employeeName,
+      baseSalary: Number(d.baseSalary ?? 0),
+      variableIncome: Number(d.variableIncome ?? 0),
+      totalDeductions: 0,
+      netSalary: 0,
+      deductions: Number(d.additionalDeduction ?? 0) > 0
+        ? [{ deductionId: 0, deductionName: 'Deducciones adicionales', amount: Number(d.additionalDeduction) }]
+        : []
+    }));
+
+    this.payrollService.updatePayroll(p.id, { details } as any).subscribe({
+      next: updated => { this.payroll.set(updated); this.selectedDetail.set(updated.details?.[0] ?? null); this.saving = false; this.rebuildDraftForm(); },
+      error: e => { alert(e?.error?.message ?? 'Error al guardar detalle de nómina'); this.saving = false; }
+    });
+  }
+
   process() {
     const p = this.payroll();
     if (!p) return;
-    if (!confirm(`¿Procesar nómina del período ${p.periodStart} - ${p.periodEnd}?\nSe calcularán prestaciones, retención y se generará el asiento contable.`)) return;
+    if (!confirm(`¿Procesar nómina del período ${p.periodStart} - ${p.periodEnd}?\nSe calcularán ingresos variables, prestaciones, retención y se generará el asiento contable.`)) return;
     this.saving = true;
     this.payrollService.processPayroll(p.id).subscribe({
       next: (updated) => { this.payroll.set(updated); this.saving = false; },

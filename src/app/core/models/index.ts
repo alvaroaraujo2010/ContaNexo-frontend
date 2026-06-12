@@ -228,6 +228,7 @@ export interface PayrollDetail {
   employeeId: number;
   employeeName: string;
   baseSalary: number;
+  variableIncome: number;
   transportAllowance: number;
   totalGross: number;
   ibc: number;

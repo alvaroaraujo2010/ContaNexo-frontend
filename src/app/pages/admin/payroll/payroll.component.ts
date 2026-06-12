@@ -68,11 +68,9 @@ export class PayrollComponent implements OnInit, OnDestroy {
       status: 'draft'
     } as any).subscribe({
       next: created => {
-        // Inmediatamente procesa para que el backend calcule todo automáticamente
-        this.svc.processPayroll(created.id).subscribe({
-          next: () => { this.showForm = false; this.saving = false; this.reload(); },
-          error: () => { this.showForm = false; this.saving = false; this.reload(); }
-        });
+        this.showForm = false;
+        this.saving = false;
+        this.router.navigate(['/admin/nomina', created.id]);
       },
       error: () => { this.saving = false; }
     });
@@ -109,6 +107,11 @@ export class PayrollComponent implements OnInit, OnDestroy {
 
   statusColor(s: string) {
     return ({ draft: '#f59e0b', processed: '#3b82f6', paid: '#22c55e', cancelled: '#94a3b8' } as any)[s] ?? '#94a3b8';
+  }
+
+  employerContributions(p: Payroll): number {
+    return (p.totalEmployerHealth ?? 0) + (p.totalEmployerPension ?? 0) + (p.totalArl ?? 0)
+      + (p.totalCompensationFund ?? 0) + (p.totalSena ?? 0) + (p.totalIcbf ?? 0);
   }
 
   fmt(n: number | undefined | null): string {

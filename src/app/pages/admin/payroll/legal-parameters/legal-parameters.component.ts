@@ -93,10 +93,33 @@ export class LegalParametersComponent implements OnInit {
   }
 
   newParam() {
+    const nextYear = new Date().getFullYear() + 1;
     this.selected.set(null);
     this.form.reset({
-      year: new Date().getFullYear() + 1,
-      effectiveFrom: `${new Date().getFullYear() + 1}-01-01`
+      year: nextYear,
+      smlmv: 1_423_500,
+      uvt: 49_799,
+      transportAllowance: 200_000,
+      transportAllowanceTop: 2,
+      minimumWithholdingUvt: 95,
+      exemptIncomeUvt: 240,
+      maxHealthIbcSmlmv: 25,
+      arlRiskOneRate: 0.522,
+      employerHealthRate: 8.5,
+      employerPensionRate: 12.0,
+      compensationFundRate: 4.0,
+      senaRate: 2.0,
+      icbfRate: 3.0,
+      employeeHealthRate: 4.0,
+      employeePensionRate: 4.0,
+      solidarityFundLowRate: 1.0,
+      solidarityFundHighRate: 1.2,
+      primaYearFraction: 1,
+      cesantiasYearFraction: 1,
+      cesantiasInterestRate: 12,
+      vacationDaysPerYear: 15,
+      effectiveFrom: `${nextYear}-01-01`,
+      notes: ''
     });
   }
 

@@ -47,7 +47,7 @@ export class ApiService {
           }
         },
         error: () => {
-          this.toast.error(messages?.error ?? 'No se pudo completar la operacion.');
+          this.toast.error(messages?.error ?? 'No se pudo completar la operación.');
         }
       })
     );
@@ -55,7 +55,7 @@ export class ApiService {
 
   /** Carga lista y ejecuta callback al recibir datos (siempre refresca la UI). */
   loadList<T>(path: string, onData: (data: T) => void, onError?: (msg: string) => void) {
-    const msg = 'No se pudo cargar la informacion. Verifique que el servidor este activo.';
+    const msg = 'No se pudo cargar la información. Verifique que el servidor esté activo.';
     return this.get<T>(path).pipe(
       tap({
         next: onData,

@@ -13,9 +13,9 @@
         <label>Nombre<input formControlName="name" /></label>
         <label>NIT<input formControlName="taxId" /></label>
         <label>Contacto<input formControlName="contactName" /></label>
-        <label>Telefono<input formControlName="phone" /></label>
+        <label>Teléfono<input formControlName="phone" /></label>
         <label>Email<input formControlName="email" /></label>
-        <label class="full">Direccion<input formControlName="address" /></label>
+        <label class="full">Dirección<input formControlName="address" /></label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit">{{ editingId ? 'Actualizar' : 'Guardar' }}</button></div>
     </form>
@@ -24,7 +24,7 @@
   <section class="data-card">
     <div class="data-card__head"><h2>Listado de proveedores</h2><span>{{ items().length }} registro(s)</span></div>
     <table class="data">
-      <thead><tr><th>Nombre</th><th>NIT</th><th>Contacto</th><th>Telefono</th><th>Email</th><th></th></tr></thead>
+      <thead><tr><th>Nombre</th><th>NIT</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th></th></tr></thead>
       <tbody>
         @for (s of items(); track s.id) {
           <tr>

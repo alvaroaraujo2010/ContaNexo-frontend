@@ -15,6 +15,40 @@
   <div *ngIf="loading()" class="loading">Cargando nómina...</div>
 
   <div *ngIf="!loading() && payroll()">
+    <section class="data-card" *ngIf="payroll()!.status === 'draft'">
+      <div class="data-card__head">
+        <h3>Preparar nómina antes de procesar</h3>
+        <span>Empleados activos: {{ detailsForm.length }}</span>
+      </div>
+      <p class="hint">Ajuste salario base si aplica, registre horas extras, comisiones o bonificaciones en ingresos variables y agregue deducciones adicionales del período.</p>
+
+      <form [formGroup]="form" (ngSubmit)="saveDraftDetails()">
+        <div formArrayName="details" class="draft-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Empleado</th>
+                <th>Salario base</th>
+                <th>Ingresos variables</th>
+                <th>Deducción adicional</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of detailsForm.controls; let i = index" [formGroupName]="i">
+                <td><strong>{{ row.get('employeeName')?.value }}</strong></td>
+                <td><input type="number" formControlName="baseSalary" min="0" /></td>
+                <td><input type="number" formControlName="variableIncome" min="0" placeholder="Horas extras, comisiones" /></td>
+                <td><input type="number" formControlName="additionalDeduction" min="0" placeholder="Préstamos, anticipos" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" type="submit" [disabled]="saving || form.invalid">Guardar y calcular borrador</button>
+        </div>
+      </form>
+    </section>
+
     <!-- Resumen general -->
     <section class="summary">
       <div class="kpi"><span>Total devengado</span><strong>{{ fmt(payroll()!.totalGross) }}</strong></div>
@@ -68,6 +102,7 @@
           <div class="slip-section">
             <h5>Devengados</h5>
             <div class="line"><span>Salario básico</span><strong>{{ fmt(d.baseSalary) }}</strong></div>
+            <div class="line" *ngIf="d.variableIncome > 0"><span>Ingresos variables</span><strong>{{ fmt(d.variableIncome) }}</strong></div>
             <div class="line" *ngIf="d.transportAllowance > 0"><span>Auxilio de transporte</span><strong>{{ fmt(d.transportAllowance) }}</strong></div>
             <div class="line total"><span>Total devengado</span><strong>{{ fmt(d.totalGross) }}</strong></div>
             <div class="line ibc"><span>IBC (Base cotización)</span><strong>{{ fmt(d.ibc) }}</strong></div>
@@ -78,7 +113,7 @@
             <div class="line" *ngIf="d.employeePensionDeduction > 0"><span>Pensión empleado (4%)</span><strong>-{{ fmt(d.employeePensionDeduction) }}</strong></div>
             <div class="line" *ngIf="d.solidarityFundDeduction > 0"><span>Fondo Solidaridad Pensional</span><strong>-{{ fmt(d.solidarityFundDeduction) }}</strong></div>
             <div class="line" *ngIf="d.withholdingTax > 0"><span>Retención en la fuente</span><strong>-{{ fmt(d.withholdingTax) }}</strong></div>
-            <div class="line" *ngFor="let cd of d.deductions" [class.additional]="cd.category === 'other'">
+            <div class="line" *ngFor="let cd of d.deductions" [class.additional]="cd.category === 'other'" [hidden]="cd.category !== 'other'">
               <span>{{ cd.deductionName }}</span><strong>-{{ fmt(cd.amount) }}</strong>
             </div>
             <div class="line total"><span>Total deducciones</span><strong>-{{ fmt(d.totalDeductions) }}</strong></div>

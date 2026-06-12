@@ -16,7 +16,7 @@ export class AdminLayoutComponent {
   menu = [
     { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
     { path: '/admin/productos', label: 'Productos', icon: 'productos' },
-    { path: '/admin/categorias', label: 'Categorias', icon: 'categorias' },
+    { path: '/admin/categorias', label: 'Categorías', icon: 'categorias' },
     { path: '/admin/inventario', label: 'Inventario', icon: 'inventario' },
     { path: '/admin/proveedores', label: 'Proveedores', icon: 'proveedores' },
     { path: '/admin/clientes', label: 'Clientes', icon: 'clientes' },

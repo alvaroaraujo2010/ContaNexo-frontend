@@ -30,11 +30,11 @@ export class LoginComponent {
     const { username, password } = this.form.getRawValue();
     this.auth.login(username!, password!).subscribe({
       next: () => {
-        this.toast.success('Sesion iniciada correctamente');
+        this.toast.success('Sesión iniciada correctamente');
         this.router.navigate(['/admin']);
       },
       error: () => {
-        this.toast.error('Credenciales invalidas');
+        this.toast.error('Credenciales inválidas');
         this.loading = false;
       },
       complete: () => this.loading = false

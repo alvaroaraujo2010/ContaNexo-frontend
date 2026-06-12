@@ -74,7 +74,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     });
     this.api
       .run(req, {
-        success: 'Venta registrada. Puede emitir la factura electronica.',
+        success: 'Venta registrada. Puede emitir la factura electrónica.',
         error: 'No se pudo registrar la venta'
       })
       .subscribe({
@@ -104,7 +104,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     if (!inv || inv.electronicInvoiceStatus === 'Emitida') return;
     this.api
       .run(this.api.post<ElectronicInvoice>(`sales/${inv.saleId}/electronic-invoice/emit`, {}), {
-        success: 'Factura electronica emitida y asiento contable generado',
+        success: 'Factura electrónica emitida y asiento contable generado',
         error: 'No se pudo emitir la factura'
       })
       .subscribe({

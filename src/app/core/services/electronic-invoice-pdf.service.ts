@@ -51,7 +51,7 @@ export class ElectronicInvoicePdfService {
 
   private printViaIframe(url: string): void {
     const iframe = document.createElement('iframe');
-    iframe.setAttribute('title', 'Factura electronica');
+    iframe.setAttribute('title', 'Factura electrónica');
     iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
     iframe.src = url;
     document.body.appendChild(iframe);

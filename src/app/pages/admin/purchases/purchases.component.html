@@ -7,7 +7,7 @@
     <form class="card-form" [formGroup]="form" (ngSubmit)="save()">
       <div class="card-form__head">
         <h3>Nueva compra</h3>
-        <p>Seleccione proveedor y agregue lineas de productos</p>
+        <p>Seleccione proveedor y agregue líneas de productos</p>
       </div>
       <div class="form-grid">
         <label>Proveedor
@@ -27,7 +27,7 @@
         <label>Costo unitario<input type="number" formControlName="unitCost" /></label>
       </div>
       <div class="form-actions">
-        <button class="btn" type="button" (click)="addLine()">Agregar linea</button>
+        <button class="btn" type="button" (click)="addLine()">Agregar línea</button>
         <button class="btn primary" type="submit">Registrar compra</button>
       </div>
     </form>
