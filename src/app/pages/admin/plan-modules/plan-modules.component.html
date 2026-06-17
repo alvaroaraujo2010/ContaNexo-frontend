@@ -1,0 +1,41 @@
+<div class="module-page">
+  <app-module-header title="Módulos por Plan" subtitle="Habilite o inhabilite módulos según el plan del negocio" badge="SaaS" />
+
+  <section class="data-card">
+    <div class="data-card__head">
+      <h2>Configuración de módulos</h2>
+      <span>{{ plans().length }} plan(es)</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data plan-modules-table">
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            @for (p of plans(); track p) {
+              <th class="plan-col">{{ p | titlecase }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (key of moduleKeys(); track key) {
+            <tr>
+              <td><strong>{{ moduleLabel(key) }}</strong></td>
+              @for (p of plans(); track p) {
+                <td class="plan-col">
+                  @if (isChanging(p, key)) {
+                    <span class="badge-warn">...</span>
+                  } @else if (isEnabled(p, key)) {
+                    <button class="btn sm badge-ok" type="button" (click)="toggle(rowFor(p, key)!)">Activo</button>
+                  } @else {
+                    <button class="btn sm badge-warn" type="button" (click)="toggle(rowFor(p, key)!)">Inactivo</button>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

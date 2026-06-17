@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountsReceivableService } from '../../../../core/services/accounts-receivable.service';
 import { Invoice, PaymentPlan } from '../../../../core/models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-payment-plan',
@@ -118,12 +119,12 @@ export class PaymentPlanComponent implements OnInit {
 
     this.arService.createPaymentPlan(paymentPlan).subscribe({
       next: () => {
-        alert('Plan de pago creado exitosamente');
+        Swal.fire({ icon: 'success', title: 'Plan creado', text: 'Plan de pago creado correctamente.', timer: 1800, showConfirmButton: false });
         this.saving = false;
         this.router.navigate(['/admin/cuentas-por-cobrar', invoice.id]);
       },
       error: () => {
-        alert('Error al crear el plan de pago');
+        Swal.fire('Error', 'No se pudo crear el plan de pago.', 'error');
         this.saving = false;
       }
     });

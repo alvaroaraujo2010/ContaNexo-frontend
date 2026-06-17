@@ -1,0 +1,118 @@
+<div class="module-page">
+  <app-module-header
+    title="Negocios"
+    subtitle="Administre empresas rentadas, códigos de acceso y estado del servicio"
+    badge="SaaS">
+    <button class="btn" type="button" (click)="showForm ? cancelEdit() : newTenant()">
+      {{ showForm ? 'Cancelar' : 'Nuevo negocio' }}
+    </button>
+  </app-module-header>
+
+  @if (showForm) {
+    <form class="card-form" [formGroup]="form" (ngSubmit)="save()">
+      <div class="card-form__head">
+        <h3>{{ editingId ? 'Editar negocio' : 'Registrar negocio rentado' }}</h3>
+        <p>{{ editingId ? 'Ajuste estado comercial, plan y control interno del servicio.' : 'El código se usará en el login y se creará un administrador inicial.' }}</p>
+      </div>
+
+      <div class="form-grid">
+        <label>Código de negocio<input formControlName="code" placeholder="cliente-demo" /></label>
+        <label>Razón social<input formControlName="businessName" placeholder="Empresa Cliente S.A.S." /></label>
+        <label>NIT<input formControlName="taxId" placeholder="900.000.000-1" /></label>
+        <label>Plan
+          <select formControlName="plan">
+            <option value="basico">Básico</option>
+            <option value="pro">Pro</option>
+            <option value="premium">Premium</option>
+          </select>
+        </label>
+        <label>Estado comercial
+          <select formControlName="commercialStatus">
+            <option value="trial">Prueba</option>
+            <option value="active">Al día</option>
+            <option value="overdue">En mora</option>
+            <option value="suspended">Suspendido</option>
+            <option value="internal">Interno</option>
+          </select>
+        </label>
+        <label>Ciclo de cobro
+          <select formControlName="billingCycle">
+            <option value="manual">Manual</option>
+            <option value="monthly">Mensual</option>
+            <option value="quarterly">Trimestral</option>
+            <option value="annual">Anual</option>
+          </select>
+        </label>
+        <label>Próximo cobro<input type="date" formControlName="nextBillingDate" /></label>
+        <label>Límite usuarios<input type="number" min="1" formControlName="maxUsers" placeholder="Sin límite" /></label>
+        <label>Estado acceso
+          <select formControlName="isActive">
+            <option [ngValue]="true">Activo</option>
+            <option [ngValue]="false">Inactivo</option>
+          </select>
+        </label>
+        <label>Notas comerciales<input formControlName="commercialNotes" placeholder="Observaciones internas" /></label>
+        @if (!editingId) {
+          <label>Administrador<input formControlName="adminFullName" placeholder="Nombre del responsable" /></label>
+          <label>Email administrador<input type="email" formControlName="adminEmail" placeholder="admin@cliente.com" /></label>
+          <label>Contraseña inicial<input type="password" formControlName="adminPassword" /></label>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button class="btn primary" type="submit" [disabled]="form.invalid">{{ editingId ? 'Actualizar negocio' : 'Crear negocio' }}</button>
+      </div>
+    </form>
+  }
+
+  <section class="data-card">
+    <div class="data-card__head">
+      <h2>Negocios registrados</h2>
+      <span>{{ filteredItems().length }} de {{ items().length }} registro(s)</span>
+    </div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por código, negocio, NIT, plan o estado" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
+    <table class="data">
+      <thead>
+        <tr>
+          <th>Negocio</th>
+          <th>Código</th>
+          <th>Plan</th>
+          <th>Comercial</th>
+          <th>Usuarios</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (tenant of filteredItems(); track tenant.id) {
+          <tr>
+            <td><strong>{{ tenant.businessName }}</strong><br><small>{{ tenant.taxId || 'Sin NIT' }}</small></td>
+            <td><code>{{ tenant.code }}</code></td>
+            <td>{{ tenant.plan }}</td>
+            <td>
+              <strong>{{ tenant.commercialStatus }}</strong><br>
+              <small>{{ tenant.billingCycle }} @if (tenant.nextBillingDate) { · {{ tenant.nextBillingDate | date:'yyyy-MM-dd' }} }</small>
+            </td>
+            <td>{{ tenant.usersCount }}</td>
+            <td><span [class]="tenant.isActive ? 'badge-ok' : 'badge-warn'">{{ tenant.isActive ? 'Activo' : 'Inactivo' }}</span></td>
+            <td>
+              <button class="btn sm" type="button" (click)="edit(tenant)">Editar</button>
+              <button class="btn sm" type="button" (click)="toggle(tenant)">{{ tenant.isActive ? 'Desactivar' : 'Activar' }}</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <strong>Sin negocios registrados</strong>
+                <p>Use «Nuevo negocio» para crear el primer cliente rentado.</p>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>

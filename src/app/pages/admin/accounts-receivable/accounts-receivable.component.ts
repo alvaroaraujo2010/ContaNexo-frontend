@@ -5,6 +5,7 @@ import { filter, Subscription } from 'rxjs';
 import { ModuleHeaderComponent } from '../../../shared/module-header/module-header.component';
 import { AccountsReceivableService } from '../../../core/services/accounts-receivable.service';
 import { Invoice, AccountReceivableSummary } from '../../../core/models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-accounts-receivable',
@@ -21,6 +22,7 @@ export class AccountsReceivableComponent implements OnInit, OnDestroy {
   invoices = signal<Invoice[]>([]);
   summary = signal<AccountReceivableSummary | null>(null);
   filterStatus = signal<string>('');
+  search = signal('');
   loading = signal(true);
 
   ngOnInit() {
@@ -59,7 +61,7 @@ export class AccountsReceivableComponent implements OnInit, OnDestroy {
 
   recordPayment(invoice: Invoice) {
     if (invoice.status === 'paid') {
-      alert('Esta factura ya ha sido pagada completamente');
+      Swal.fire('Factura pagada', 'Esta factura ya fue pagada completamente.', 'info');
       return;
     }
     this.router.navigate(['/admin/cuentas-por-cobrar/pago', invoice.id]);
@@ -67,8 +69,12 @@ export class AccountsReceivableComponent implements OnInit, OnDestroy {
 
   getFilteredInvoices(): Invoice[] {
     const status = this.filterStatus();
-    if (!status) return this.invoices();
-    return this.invoices().filter(i => i.status === status);
+    const term = this.search().trim().toLowerCase();
+    return this.invoices().filter(i => {
+      const matchesStatus = !status || i.status === status;
+      const matchesTerm = !term || `${i.documentNumber} ${i.customerName} ${i.status} ${i.invoiceDate} ${i.dueDate}`.toLowerCase().includes(term);
+      return matchesStatus && matchesTerm;
+    });
   }
 
   getStatusColor(status: string): string {

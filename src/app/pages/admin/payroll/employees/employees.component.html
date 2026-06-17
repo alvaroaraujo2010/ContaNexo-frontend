@@ -1,11 +1,14 @@
 <div class="employees-page">
   <app-module-header title="Empleados" subtitle="Gestión del personal de nómina">
-    <button class="btn" type="button" (click)="openForm()">+ Nuevo Empleado</button>
+    <button class="btn" type="button" (click)="openForm()" *ngIf="isAdmin()">+ Nuevo Empleado</button>
   </app-module-header>
 
   <div *ngIf="loading()" class="loading">Cargando...</div>
 
   <div *ngIf="!loading()" class="table-container">
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por nombre, cédula/NIT, email, cargo o departamento" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
     <table>
       <thead>
         <tr>
@@ -21,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let emp of employees()">
+        <tr *ngFor="let emp of filteredEmployees()">
           <td>
             <strong>{{ emp.name }}</strong>
             <small *ngIf="emp.email" class="sub">{{ emp.email }}</small>
@@ -41,13 +44,13 @@
             </span>
           </td>
           <td class="actions">
-            <button (click)="edit(emp)" title="Editar">✏️</button>
-            <button *ngIf="emp.isActive" (click)="openTerminate(emp)" title="Terminar contrato">⏹</button>
+            <button *ngIf="isAdmin()" (click)="edit(emp)" title="Editar">✏️</button>
+            <button *ngIf="isAdmin() && emp.isActive" (click)="openTerminate(emp)" title="Terminar contrato">⏹</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <p *ngIf="employees().length === 0" class="empty-message">No hay empleados registrados. Agregue el primero.</p>
+    <p *ngIf="filteredEmployees().length === 0" class="empty-message">No hay empleados que coincidan con la búsqueda.</p>
   </div>
 
   <!-- Modal Crear/Editar -->

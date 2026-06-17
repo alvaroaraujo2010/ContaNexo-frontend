@@ -33,6 +33,10 @@
     <!-- Filtros -->
     <div class="filters">
       <label>
+        Buscar:
+        <input type="search" placeholder="Factura, cliente, estado o fecha" [value]="search()" (input)="search.set($any($event.target).value)" />
+      </label>
+      <label>
         Filtrar por Estado:
         <select (change)="filterStatus.set($any($event.target).value)">
           <option value="">Todos</option>

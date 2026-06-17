@@ -33,6 +33,14 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "allowedCommonJsDependencies": [
+              "sweetalert2",
+              "html2canvas",
+              "canvg",
+              "core-js",
+              "raf",
+              "rgbcolor"
             ]
           },
           "configurations": {

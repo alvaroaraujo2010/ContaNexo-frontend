@@ -1,6 +1,6 @@
 <div class="social-security-container">
   <app-module-header title="Seguridad Social">
-    <button class="btn" type="button" (click)="openPaymentForm()">+ Registrar Pago</button>
+    <button class="btn" type="button" (click)="openPaymentForm()" *ngIf="isAdmin()">+ Registrar Pago</button>
   </app-module-header>
 
   <div class="summary">

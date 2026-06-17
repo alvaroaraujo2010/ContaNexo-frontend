@@ -6,6 +6,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { SocialSecurityPayment } from '../../../../core/models';
+import Swal from 'sweetalert2';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-social-security',
@@ -18,6 +20,7 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
   private payrollService = inject(PayrollService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  auth = inject(AuthService);
   private navSub?: Subscription;
 
   payments = signal<SocialSecurityPayment[]>([]);
@@ -48,6 +51,8 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
     });
   }
 
+  isAdmin() { return this.auth.hasRole(['Administrador']); }
+
   loadPaymentsByPeriod(period: string) {
     this.selectedPeriod.set(period);
   }
@@ -55,7 +60,7 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
   openPaymentForm() {
     const period = this.getPendingPeriods()[0] ?? '';
     if (!period) {
-      alert('No hay aportes pendientes para pagar. Primero procese una nómina para generar seguridad social.');
+      Swal.fire('Sin aportes pendientes', 'Primero procese una nómina para generar seguridad social.', 'info');
       return;
     }
 
@@ -79,7 +84,7 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
     const filteredPayments = this.payments().filter(p => p.period === period && p.status === 'pending');
 
     if (filteredPayments.length === 0) {
-      alert('No hay pagos pendientes para este período');
+      Swal.fire('Sin pagos pendientes', 'No hay pagos pendientes para este período.', 'info');
       this.saving = false;
       return;
     }
@@ -92,14 +97,14 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
 
     this.payrollService.paySocialSecurity(updatedPayments).subscribe({
       next: () => {
-        alert('Pago de seguridad social registrado correctamente');
+        Swal.fire({ icon: 'success', title: 'Pago registrado', text: 'Pago de seguridad social registrado correctamente.', timer: 1800, showConfirmButton: false });
         this.showPaymentForm = false;
         this.form.reset();
         this.saving = false;
         this.reload();
       },
       error: () => {
-        alert('Error al registrar el pago');
+        Swal.fire('Error', 'No se pudo registrar el pago.', 'error');
         this.saving = false;
       }
     });

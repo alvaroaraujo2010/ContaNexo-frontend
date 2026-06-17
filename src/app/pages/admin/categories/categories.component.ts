@@ -19,6 +19,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private navSub?: Subscription;
 
   items = signal<Category[]>([]);
+  search = signal('');
   showForm = false;
   editingId: number | null = null;
 
@@ -33,6 +34,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   reload() {
     this.api.loadList<Category[]>('categories', d => this.items.set(d)).subscribe();
+  }
+
+  filteredItems() {
+    const term = this.search().trim().toLowerCase();
+    if (!term) return this.items();
+    return this.items().filter(c => `${c.name} ${c.description ?? ''}`.toLowerCase().includes(term));
   }
 
   edit(c: Category) {

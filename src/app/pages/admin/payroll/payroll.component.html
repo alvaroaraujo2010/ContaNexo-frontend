@@ -1,27 +1,26 @@
-<div class="payroll-page">
+<div class="module-page">
   <app-module-header title="Gestión de Nómina" subtitle="Períodos con salarios, variables, deducciones, seguridad social, retención y provisiones">
-    <button class="btn" type="button" (click)="openForm()">+ Nueva Nómina</button>
+    <button class="btn" type="button" (click)="openForm()" *ngIf="isAdmin()">+ Nueva Nómina</button>
   </app-module-header>
 
-  <!-- Filtros -->
-  <div class="toolbar">
-    <div class="filter-group">
-      <label>Estado:</label>
-      <select (change)="filterStatus.set($any($event.target).value)">
-        <option value="">Todos</option>
+  <div *ngIf="loading()" class="loading">Cargando nóminas...</div>
+
+  <section class="data-card" *ngIf="!loading()">
+    <div class="data-card__head">
+      <h2>Nóminas</h2>
+      <span>{{ getFilteredPayrolls().length }} de {{ payrolls().length }} período(s)</span>
+    </div>
+    <div class="list-search list-search--with-filter">
+      <input type="search" placeholder="Buscar por período, estado, pago o notas" [value]="search()" (input)="search.set($any($event.target).value)" />
+      <select (change)="filterStatus.set($any($event.target).value)" class="filter-select">
+        <option value="">Todos los estados</option>
         <option value="draft">Borrador</option>
         <option value="processed">Procesada</option>
         <option value="paid">Pagada</option>
         <option value="cancelled">Cancelada</option>
       </select>
     </div>
-  </div>
-
-  <div *ngIf="loading()" class="loading">Cargando nóminas...</div>
-
-  <!-- Tabla -->
-  <div *ngIf="!loading()" class="table-container">
-    <table>
+    <table class="data">
       <thead>
         <tr>
           <th>Período</th>
@@ -53,17 +52,17 @@
           <td>{{ p.paymentDate || '—' }}</td>
           <td class="actions">
             <button (click)="viewDetails(p)" title="Ver / Editar detalles">📋</button>
-            <button *ngIf="p.status === 'draft'" (click)="processPayroll(p)" title="Procesar nómina">▶️</button>
-            <button *ngIf="p.status === 'processed'" (click)="payPayroll(p)" title="Registrar pago">💳</button>
-            <button *ngIf="p.status === 'draft'" (click)="delete(p)" title="Eliminar">🗑️</button>
+            <button *ngIf="isAdmin() && p.status === 'draft'" (click)="processPayroll(p)" title="Procesar nómina">▶️</button>
+            <button *ngIf="isAdmin() && p.status === 'processed'" (click)="payPayroll(p)" title="Registrar pago">💳</button>
+            <button *ngIf="isAdmin() && p.status === 'draft'" (click)="delete(p)" title="Eliminar">🗑️</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <p *ngIf="getFilteredPayrolls().length === 0" class="empty-message">
-      No hay nóminas. Cree la primera con el botón "+ Nueva Nómina".
+    <p *ngIf="getFilteredPayrolls().length === 0" class="empty-state">
+      <strong>Sin nóminas</strong><br />Cree la primera con el botón "+ Nueva Nómina".
     </p>
-  </div>
+  </section>
 
   <!-- ═══════════════ MODAL CREAR NÓMINA ═══════════════ -->
   <div *ngIf="showForm" class="modal-overlay" (click)="showForm=false">

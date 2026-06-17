@@ -4,29 +4,50 @@
   </app-module-header>
 
   @if (showForm) {
-    <form class="card-form" [formGroup]="form" (ngSubmit)="save()">
+    <form #customerForm class="card-form" [formGroup]="form" (ngSubmit)="save()">
       <div class="card-form__head">
         <h3>{{ editingId ? 'Editar cliente' : 'Nuevo cliente' }}</h3>
         <p>Complete los datos del cliente</p>
       </div>
       <div class="form-grid">
-        <label>Nombre<input formControlName="name" /></label>
-        <label>NIT<input formControlName="taxId" /></label>
-        <label>Contacto<input formControlName="contactName" /></label>
-        <label>Teléfono<input formControlName="phone" /></label>
-        <label>Email<input formControlName="email" /></label>
-        <label class="full">Dirección<input formControlName="address" /></label>
+        <label>Nombre Cliente / Negocio
+          <input formControlName="name" [attr.maxlength]="limits.name" required />
+          @if (fieldError('name')) { <small class="field-error">{{ fieldError('name') }}</small> }
+        </label>
+        <label>NIT
+          <input formControlName="taxId" [attr.maxlength]="limits.taxId" required />
+          @if (fieldError('taxId')) { <small class="field-error">{{ fieldError('taxId') }}</small> }
+        </label>
+        <label>Persona de Contacto
+          <input formControlName="contactName" [attr.maxlength]="limits.contactName" required />
+          @if (fieldError('contactName')) { <small class="field-error">{{ fieldError('contactName') }}</small> }
+        </label>
+        <label>Telefono
+          <input formControlName="phone" [attr.maxlength]="limits.phone" required />
+          @if (fieldError('phone')) { <small class="field-error">{{ fieldError('phone') }}</small> }
+        </label>
+        <label>Email
+          <input type="email" formControlName="email" [attr.maxlength]="limits.email" required />
+          @if (fieldError('email')) { <small class="field-error">{{ fieldError('email') }}</small> }
+        </label>
+        <label class="full">Direccion
+          <input formControlName="address" [attr.maxlength]="limits.address" required />
+          @if (fieldError('address')) { <small class="field-error">{{ fieldError('address') }}</small> }
+        </label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit">{{ editingId ? 'Actualizar' : 'Guardar' }}</button></div>
     </form>
   }
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Listado de clientes</h2><span>{{ items().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Listado de clientes</h2><span>{{ filteredItems().length }} de {{ items().length }} registro(s)</span></div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por nombre, NIT, contacto, telefono o email" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
     <table class="data">
-      <thead><tr><th>Nombre</th><th>NIT</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th></th></tr></thead>
+      <thead><tr><th>Nombre</th><th>NIT</th><th>Contacto</th><th>Telefono</th><th>Email</th><th></th></tr></thead>
       <tbody>
-        @for (c of items(); track c.id) {
+        @for (c of filteredItems(); track c.id) {
           <tr>
             <td><strong>{{ c.name }}</strong></td>
             <td>{{ c.taxId }}</td>

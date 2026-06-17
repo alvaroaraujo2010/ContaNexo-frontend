@@ -4,6 +4,26 @@ export interface LoginResponse {
   email: string;
   role: string;
   expiresAt: string;
+  tenantId: number;
+  tenantCode: string;
+  businessName: string;
+  plan: string;
+}
+
+export interface Tenant {
+  id: number;
+  code: string;
+  businessName: string;
+  taxId?: string;
+  plan: string;
+  commercialStatus: string;
+  billingCycle: string;
+  nextBillingDate?: string;
+  maxUsers?: number;
+  commercialNotes?: string;
+  isActive: boolean;
+  createdAt: string;
+  usersCount: number;
 }
 
 export interface Company {

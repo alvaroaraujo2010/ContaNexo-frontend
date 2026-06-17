@@ -1,7 +1,10 @@
 <div class="invoice-detail-container">
   <header class="header">
     <h1>Detalles de Factura</h1>
-    <button class="back-btn" (click)="goBack()">← Volver</button>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="downloadStatement()" *ngIf="invoice()">Descargar Estado PDF</button>
+      <button class="back-btn" (click)="goBack()">← Volver</button>
+    </div>
   </header>
 
   <div *ngIf="loading()" class="loading">Cargando...</div>
@@ -95,6 +98,7 @@
             <th>Monto</th>
             <th>Método</th>
             <th>Referencia</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -103,6 +107,7 @@
             <td>${{ payment.amount | number: '1.2-2' }}</td>
             <td>{{ payment.paymentMethod | uppercase }}</td>
             <td>{{ payment.reference || '-' }}</td>
+            <td><button class="btn-secondary" type="button" (click)="downloadPaymentReceipt(payment)">PDF</button></td>
           </tr>
         </tbody>
       </table>

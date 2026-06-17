@@ -26,7 +26,8 @@ section h3 { margin: 0 0 1rem 0; color: #1f2937; }
 }
 .employees-list button.active { background: #2563eb; color: white; border-color: #2563eb; }
 
-.pay-slip h4 { margin: 0 0 1rem 0; color: #1f2937; }
+.pay-slip__head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.pay-slip h4 { margin: 0; color: #1f2937; }
 .slip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .slip-section { background: #f9fafb; padding: 1rem; border-radius: 6px; }
 .slip-section.highlight { background: #2563eb; color: white; grid-column: 1 / -1; text-align: center; padding: 1.5rem; }

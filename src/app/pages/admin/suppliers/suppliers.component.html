@@ -10,23 +10,44 @@
         <p>Complete los datos del proveedor</p>
       </div>
       <div class="form-grid">
-        <label>Nombre<input formControlName="name" /></label>
-        <label>NIT<input formControlName="taxId" /></label>
-        <label>Contacto<input formControlName="contactName" /></label>
-        <label>Teléfono<input formControlName="phone" /></label>
-        <label>Email<input formControlName="email" /></label>
-        <label class="full">Dirección<input formControlName="address" /></label>
+        <label>Nombre
+          <input formControlName="name" [attr.maxlength]="limits.name" required />
+          @if (fieldError('name')) { <small class="field-error">{{ fieldError('name') }}</small> }
+        </label>
+        <label>NIT
+          <input formControlName="taxId" [attr.maxlength]="limits.taxId" />
+          @if (fieldError('taxId')) { <small class="field-error">{{ fieldError('taxId') }}</small> }
+        </label>
+        <label>Contacto
+          <input formControlName="contactName" [attr.maxlength]="limits.contactName" />
+          @if (fieldError('contactName')) { <small class="field-error">{{ fieldError('contactName') }}</small> }
+        </label>
+        <label>Teléfono
+          <input formControlName="phone" [attr.maxlength]="limits.phone" />
+          @if (fieldError('phone')) { <small class="field-error">{{ fieldError('phone') }}</small> }
+        </label>
+        <label>Email
+          <input type="email" formControlName="email" [attr.maxlength]="limits.email" />
+          @if (fieldError('email')) { <small class="field-error">{{ fieldError('email') }}</small> }
+        </label>
+        <label class="full">Dirección
+          <input formControlName="address" [attr.maxlength]="limits.address" />
+          @if (fieldError('address')) { <small class="field-error">{{ fieldError('address') }}</small> }
+        </label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit">{{ editingId ? 'Actualizar' : 'Guardar' }}</button></div>
     </form>
   }
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Listado de proveedores</h2><span>{{ items().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Listado de proveedores</h2><span>{{ filteredItems().length }} de {{ items().length }} registro(s)</span></div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por nombre, NIT, contacto, teléfono o email" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
     <table class="data">
       <thead><tr><th>Nombre</th><th>NIT</th><th>Contacto</th><th>Teléfono</th><th>Email</th><th></th></tr></thead>
       <tbody>
-        @for (s of items(); track s.id) {
+        @for (s of filteredItems(); track s.id) {
           <tr>
             <td><strong>{{ s.name }}</strong></td>
             <td>{{ s.taxId }}</td>

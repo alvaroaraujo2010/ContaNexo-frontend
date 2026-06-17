@@ -1,44 +1,48 @@
 <div class="module-page">
-  <app-module-header title="Productos" subtitle="Catálogo, precios, stock y categorías de mercancía" badge="Inventario">
+  <app-module-header title="Productos" subtitle="Catalogo, precios, stock y categorias de mercancia" badge="Inventario">
     <button class="btn" type="button" (click)="showForm = !showForm">{{ showForm ? 'Cancelar' : 'Nuevo producto' }}</button>
   </app-module-header>
 
   @if (showForm) {
-    <form class="card-form" [formGroup]="form" (ngSubmit)="save()">
+    <form #productForm class="card-form" [formGroup]="form" (ngSubmit)="save()">
       <div class="card-form__head">
         <h3>{{ editingId ? 'Editar producto' : 'Nuevo producto' }}</h3>
-        <p>Datos del catálogo e inventario</p>
+        <p>Datos del catalogo e inventario</p>
       </div>
       <div class="form-grid">
         <label>SKU<input formControlName="sku" /></label>
         <label>Nombre<input formControlName="name" /></label>
-        <label>Categoría
+        <label>Categoria
           <select formControlName="categoryId">
-            <option [value]="0">Seleccione</option>
-            @for (c of categories(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+            <option [ngValue]="0">Seleccione</option>
+            @for (c of categories(); track c.id) { <option [ngValue]="c.id">{{ c.name }}</option> }
           </select>
         </label>
         <label>Costo<input type="number" formControlName="unitCost" /></label>
         <label>Precio<input type="number" formControlName="unitPrice" /></label>
-        <label>Stock mínimo<input type="number" formControlName="minStock" /></label>
+        <label>Stock actual<input type="number" min="0" formControlName="stock" /></label>
+        <label>Stock minimo<input type="number" min="0" formControlName="minStock" /></label>
         <label>Unidad<input formControlName="unit" /></label>
-        <label class="full">Descripción<textarea formControlName="description" rows="2"></textarea></label>
+        <label class="full">Descripcion<textarea formControlName="description" rows="2"></textarea></label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit" [disabled]="saving">{{ saving ? 'Guardando...' : (editingId ? 'Actualizar' : 'Guardar') }}</button></div>
     </form>
   }
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Listado de productos</h2><span>{{ items().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Listado de productos</h2><span>{{ filteredItems().length }} de {{ items().length }} registro(s)</span></div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por SKU, nombre o categoria" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
     <table class="data">
-      <thead><tr><th>SKU</th><th>Nombre</th><th>Categoría</th><th>Stock</th><th>Precio</th><th></th></tr></thead>
+      <thead><tr><th>SKU</th><th>Nombre</th><th>Categoria</th><th>Stock</th><th>Precio</th><th></th></tr></thead>
       <tbody>
-        @for (p of items(); track p.id) {
+        @for (p of filteredItems(); track p.id) {
           <tr>
             <td><strong>{{ p.sku }}</strong></td>
-            <td>{{ p.name }} @if (p.lowStock) { <span class="badge-warn">Bajo</span> }</td>
+            <td>{{ p.name }} @if (isLowStock(p)) { <span class="badge-warn">Bajo</span> }</td>
             <td>{{ p.categoryName }}</td>
-            <td>{{ p.stock }}</td>
+            <td>{{ displayStock(p) }}</td>
             <td>{{ p.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
             <td><button class="btn sm" type="button" (click)="edit(p)">Editar</button></td>
           </tr>

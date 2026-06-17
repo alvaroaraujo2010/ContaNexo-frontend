@@ -4,6 +4,9 @@
   </app-module-header>
 
   <div class="table-container">
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por nombre, tipo o descripción" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
     <table>
       <thead>
         <tr>
@@ -16,7 +19,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let deduction of deductions()">
+        <tr *ngFor="let deduction of filteredDeductions()">
           <td>{{ deduction.name }}</td>
           <td>
             <span class="badge" [ngClass]="deduction.type === 'percentage' ? 'percentage' : 'fixed'">
@@ -37,7 +40,7 @@
         </tr>
       </tbody>
     </table>
-    <p *ngIf="deductions().length === 0" class="empty-message">No hay deducciones registradas</p>
+    <p *ngIf="filteredDeductions().length === 0" class="empty-message">No hay deducciones que coincidan con la búsqueda</p>
   </div>
 
   <!-- Formulario Modal -->

@@ -4,10 +4,10 @@
     subtitle="Desprendible de nómina con cumplimiento legal colombiano"
   >
     <button class="btn" (click)="cancel()">← Volver</button>
-    <button class="btn primary" *ngIf="payroll()?.status === 'draft'" (click)="process()" [disabled]="saving">
+    <button class="btn primary" *ngIf="isAdmin() && payroll()?.status === 'draft'" (click)="process()" [disabled]="saving">
       {{ saving ? 'Procesando...' : 'Procesar nómina' }}
     </button>
-    <button class="btn primary" *ngIf="payroll()?.status === 'processed'" (click)="pay()" [disabled]="saving">
+    <button class="btn primary" *ngIf="isAdmin() && payroll()?.status === 'processed'" (click)="pay()" [disabled]="saving">
       Pagar nómina
     </button>
   </app-module-header>
@@ -15,7 +15,7 @@
   <div *ngIf="loading()" class="loading">Cargando nómina...</div>
 
   <div *ngIf="!loading() && payroll()">
-    <section class="data-card" *ngIf="payroll()!.status === 'draft'">
+    <section class="data-card" *ngIf="isAdmin() && payroll()!.status === 'draft'">
       <div class="data-card__head">
         <h3>Preparar nómina antes de procesar</h3>
         <span>Empleados activos: {{ detailsForm.length }}</span>
@@ -97,7 +97,10 @@
       </div>
 
       <div *ngIf="selectedDetail() as d" class="pay-slip">
-        <h4>Desprendible de {{ d.employeeName }}</h4>
+        <div class="pay-slip__head">
+          <h4>Desprendible de {{ d.employeeName }}</h4>
+          <button class="btn" type="button" (click)="downloadPayslip(d)">Descargar PDF</button>
+        </div>
         <div class="slip-grid">
           <div class="slip-section">
             <h5>Devengados</h5>

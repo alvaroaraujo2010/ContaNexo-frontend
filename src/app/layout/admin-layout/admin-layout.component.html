@@ -7,22 +7,32 @@
         <small>Panel administrativo</small>
       </div>
     </a>
+    <div class="tenant-card">
+      <span>Negocio activo</span>
+      <strong>{{ auth.user()?.businessName || 'ContaNexo' }}</strong>
+      <small>Código: {{ auth.user()?.tenantCode || 'contanexo' }}</small>
+    </div>
     <nav>
-      @for (item of menu; track item.path) {
+      @for (item of visibleMenu(); track item.path) {
         <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.path === '/admin' }">
           <span class="ico"><app-sidebar-icon [name]="item.icon" /></span>
           {{ item.label }}
         </a>
       }
     </nav>
-    <div class="sidebar-foot">
-      <p>{{ auth.user()?.fullName }}</p>
-      <small>{{ auth.user()?.role }}</small>
-      <button type="button" (click)="auth.logout()">Cerrar sesión</button>
-      <a routerLink="/">Sitio público</a>
-    </div>
   </aside>
   <main class="content">
+    <header class="topbar">
+      <a routerLink="/" class="topbar-link">Sitio público</a>
+      <div class="user-menu">
+        <div class="user-menu__identity">
+          <strong>{{ auth.user()?.fullName }}</strong>
+          <small>{{ auth.user()?.role }}</small>
+        </div>
+        <button type="button" (click)="changePassword()">Cambiar contrasena</button>
+        <button type="button" class="logout" (click)="auth.logout()">Cerrar sesión</button>
+      </div>
+    </header>
     <router-outlet />
   </main>
 </div>

@@ -33,7 +33,7 @@
           <td>{{ reminder.customerName }}</td>
           <td>
             <span class="reminder-type" [ngClass]="'reminder-' + reminder.reminderType">
-              {{ reminder.reminderType | uppercase }}
+              {{ reminderTypeLabel(reminder.reminderType) }}
             </span>
           </td>
           <td>
@@ -49,6 +49,9 @@
             </span>
           </td>
           <td class="actions">
+            <button type="button" (click)="previewReminder(reminder)">
+              Vista previa
+            </button>
             <button *ngIf="reminder.status === 'pending'" (click)="sendReminder(reminder)">
               ✉️ Enviar
             </button>

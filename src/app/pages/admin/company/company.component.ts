@@ -13,6 +13,7 @@ import { ModuleHeaderComponent } from '../../../shared/module-header/module-head
 export class CompanyComponent implements OnInit {
   private api = inject(ApiService);
   private fb = inject(FormBuilder);
+  loading = true;
   form = this.fb.group({
     businessName: ['', Validators.required],
     tagline: [''],
@@ -26,7 +27,10 @@ export class CompanyComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.api.get<Company>('company').subscribe(c => this.form.patchValue(c));
+    this.api.loadList<Company>('company', c => {
+      this.form.patchValue(c);
+      this.loading = false;
+    }, () => this.loading = false);
   }
 
   save() {

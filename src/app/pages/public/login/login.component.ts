@@ -20,6 +20,7 @@ export class LoginComponent {
   loading = false;
 
   form = this.fb.group({
+    businessCode: ['contanexo', Validators.required],
     username: ['administrador', Validators.required],
     password: ['ingAlv4r0', Validators.required]
   });
@@ -27,14 +28,14 @@ export class LoginComponent {
   submit() {
     if (this.form.invalid) return;
     this.loading = true;
-    const { username, password } = this.form.getRawValue();
-    this.auth.login(username!, password!).subscribe({
+    const { businessCode, username, password } = this.form.getRawValue();
+    this.auth.login(businessCode!, username!, password!).subscribe({
       next: () => {
         this.toast.success('Sesión iniciada correctamente');
         this.router.navigate(['/admin']);
       },
       error: () => {
-        this.toast.error('Credenciales inválidas');
+        this.toast.error('Código de negocio o credenciales inválidas');
         this.loading = false;
       },
       complete: () => this.loading = false

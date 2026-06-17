@@ -1,77 +1,173 @@
 <div class="module-page">
-  <app-module-header title="Ventas" subtitle="Facturación electrónica, clientes e inventario" badge="Operaciones">
-    <button class="btn" type="button" (click)="showForm = !showForm">{{ showForm ? 'Cancelar' : 'Nueva venta' }}</button>
-  </app-module-header>
+  <app-module-header title="Ventas" subtitle="Facturacion electronica, clientes e inventario" badge="Operaciones" />
 
-  @if (showForm) {
-    <form class="card-form" [formGroup]="form" (ngSubmit)="save()">
-      <div class="card-form__head">
-        <h3>Nueva venta</h3>
-        <p>Seleccione cliente y agregue líneas de productos</p>
+  <form class="card-form pos-sale" [formGroup]="form" (ngSubmit)="saveAndComplete()">
+      <div class="sale-toolbar">
+        <div class="search-box">
+          <label>Producto</label>
+          <input
+            type="search"
+            formControlName="productSearch"
+            placeholder="Escriba nombre o codigo del producto"
+            autocomplete="off"
+            [attr.maxlength]="limits.search"
+            (input)="clearSelectedProductOnInput()"
+            (keydown.arrowDown)="$event.preventDefault(); moveProductSelection(1)"
+            (keydown.arrowUp)="$event.preventDefault(); moveProductSelection(-1)"
+            (keydown.enter)="$event.preventDefault(); selectActiveProduct()"
+          />
+          @if (filteredProducts().length) {
+            <div class="suggestions">
+              @for (p of filteredProducts(); track p.id) {
+                <button type="button" [class.active]="productActiveIndex === $index" (mousedown)="selectProduct(p)">
+                  <span><strong>{{ p.name }}</strong><small>{{ p.sku }} | Stock {{ p.stock }} | {{ p.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</small></span>
+                  <b>Seleccionar</b>
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <label class="quantity-box">Cantidad
+          <input
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            formControlName="quantity"
+            (keydown)="blockInvalidQuantityKey($event)"
+            (input)="normalizeQuantityInput()"
+          />
+        </label>
+
+        <div class="search-box">
+          <label>Cliente</label>
+          <input #customerSearchInput type="search" formControlName="customerSearch" placeholder="Consumidor final o buscar cliente" autocomplete="off" [attr.maxlength]="limits.search" (input)="clearSelectedCustomerOnInput()" />
+          @if (form.controls.customerSearch.value) {
+            <button class="customer-final" type="button" (click)="selectCustomer(null)">Usar consumidor final</button>
+          }
+          @if (filteredCustomers().length) {
+            <div class="suggestions suggestions--customer">
+              @for (c of filteredCustomers(); track c.id) {
+                <button type="button" (mousedown)="selectCustomer(c)">
+                  <span><strong>{{ c.name }}</strong><small>{{ c.taxId || 'Sin NIT/CC' }}</small></span>
+                  <b>Seleccionar</b>
+                </button>
+              }
+            </div>
+          }
+        </div>
       </div>
-      <div class="form-grid">
-        <label>Cliente
-          <select formControlName="customerId">
-            <option [value]="0">Consumidor final</option>
-            @for (c of customers(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
-          </select>
-        </label>
-        <label>Forma de pago
-          <select formControlName="paymentMethod">
-            <option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option>
-          </select>
-        </label>
-        <label>IVA<input type="number" step="0.01" formControlName="taxRate" /></label>
-        <label>Producto
-          <select formControlName="productId">
-            <option [value]="0">Seleccione</option>
-            @for (p of products(); track p.id) { <option [value]="p.id">{{ p.name }} ({{ p.stock }})</option> }
-          </select>
-        </label>
-        <label>Cantidad<input type="number" formControlName="quantity" /></label>
-        <label>Precio<input type="number" formControlName="unitPrice" /></label>
+
+      <div class="form-actions compact-actions">
+        <button class="btn" type="button" (click)="addSelectedProduct()">Agregar producto</button>
       </div>
+
+      <section class="sale-summary">
+        <div class="sale-summary__head">
+          <div>
+            <h4>Resumen de la venta</h4>
+            <p>Cliente: <strong>{{ selectedCustomer?.name || 'Consumidor final' }}</strong></p>
+          </div>
+          <strong class="sale-total">{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+        </div>
+
+        @if (lines.length) {
+          <table class="summary-table">
+            <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th><th></th></tr></thead>
+            <tbody>
+              @for (l of lines; track l.productId) {
+                <tr>
+                  <td><strong>{{ l.name }}</strong><small>Stock actual {{ l.stock }}</small></td>
+                  <td>{{ l.quantity }}</td>
+                  <td>{{ l.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                  <td>{{ l.quantity * l.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+                  <td><button class="btn sm" type="button" (click)="removeLine(l.productId)">Quitar</button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="totals-box">
+            <span>Base: <strong>{{ subtotal() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></span>
+            <span>IVA: <strong>{{ tax() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></span>
+            <span>Total: <strong>{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></span>
+          </div>
+        } @else {
+          <div class="empty-state compact">
+            <strong>Busque un producto para iniciar</strong>
+            <p>Seleccione una coincidencia, indique cantidad y agregue el producto.</p>
+          </div>
+        }
+      </section>
+
+      <div class="sale-options">
+        <div>
+          <label>Forma de pago</label>
+          <div class="payment-buttons">
+            @for (method of paymentMethods; track method) {
+              <button type="button" [class.active]="form.controls.paymentMethod.value === method" (click)="setPayment(method)">{{ method }}</button>
+            }
+          </div>
+        </div>
+        <label class="tax-input">Fecha<input type="date" formControlName="saleDate" /></label>
+        <label class="tax-input">IVA<input type="number" step="0.01" min="0" max="1" formControlName="taxRate" /></label>
+      </div>
+
+      <label class="notes-box">Notas
+        <input formControlName="notes" [attr.maxlength]="limits.notes" />
+      </label>
+
       <div class="form-actions">
-        <button class="btn" type="button" (click)="addLine()">Agregar línea</button>
-        <button class="btn primary" type="submit">Registrar venta</button>
+        @if (editingId) {
+          <button class="btn" type="button" (click)="cancelForm()">Cancelar edicion</button>
+        }
+        <button class="btn" type="button" (click)="saveDraft()" [disabled]="!lines.length">Guardar borrador</button>
+        <button class="btn primary" type="submit" [disabled]="!lines.length">Completar venta</button>
       </div>
-    </form>
-    @if (lines.length) {
-      <ul class="line-list">@for (l of lines; track l.productId) { <li>{{ l.name }} x {{ l.quantity }} @ {{ l.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</li> }</ul>
-    }
-  }
+  </form>
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Historial de ventas</h2><span>{{ items().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Historial de ventas</h2><span>{{ filteredSales().length }} de {{ items().length }} registro(s)</span></div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por documento, factura, cliente, pago o estado" [attr.maxlength]="limits.search" [value]="historySearch()" (input)="historySearch.set($any($event.target).value)" />
+    </div>
     <table class="data">
       <thead>
         <tr>
           <th>Documento</th>
-          <th>Factura electrónica</th>
+          <th>Factura electronica</th>
           <th>Cliente</th>
           <th>Fecha</th>
           <th>Total</th>
+          <th>Estado</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        @for (s of items(); track s.id) {
+        @for (s of filteredSales(); track s.id) {
           <tr>
             <td><strong>{{ s.documentNumber }}</strong></td>
-            <td>
-              <span class="fe-badge" [class.fe-badge--ok]="s.electronicInvoiceStatus === 'Emitida'">
-                {{ s.electronicInvoiceStatus === 'Emitida' ? (s.electronicInvoiceNumber || 'Emitida') : 'Borrador' }}
-              </span>
-            </td>
+            <td><span [class]="invoiceClass(s)">{{ invoiceLabel(s) }}</span></td>
             <td>{{ s.customerName || 'Consumidor final' }}</td>
             <td>{{ s.saleDate | date:'short' }}</td>
             <td>{{ s.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td><span [class]="statusClass(s.status)">{{ s.status }}</span></td>
             <td>
-              <button class="btn sm" type="button" (click)="openInvoice(s)">Factura FE</button>
+              <div class="row-actions">
+                @if (s.status === 'Borrador') {
+                  <button class="btn sm" type="button" (click)="edit(s)">Editar</button>
+                  <button class="btn sm primary" type="button" (click)="complete(s)">Completar</button>
+                  <button class="btn sm danger" type="button" (click)="cancelSale(s)">Anular</button>
+                } @else if (s.status === 'Completada') {
+                  <button class="btn sm" type="button" (click)="openInvoice(s)">Factura FE</button>
+                  @if (s.electronicInvoiceStatus !== 'Emitida') {
+                    <button class="btn sm danger" type="button" (click)="cancelSale(s)">Anular</button>
+                  }
+                }
+              </div>
             </td>
           </tr>
         } @empty {
-          <tr><td colspan="6"><div class="empty-state"><strong>Sin ventas</strong><p>Registre la primera venta del negocio.</p></div></td></tr>
+          <tr><td colspan="7"><div class="empty-state"><strong>Sin ventas</strong><p>Registre la primera venta del negocio.</p></div></td></tr>
         }
       </tbody>
     </table>
@@ -87,10 +183,10 @@
     <div class="fe-panel" (click)="$event.stopPropagation()">
       <header class="fe-panel__head">
         <div>
-          <h2>Factura electrónica</h2>
-          <p>{{ inv.electronicInvoiceStatus === 'Emitida' ? 'Documento emitido' : 'Borrador — pendiente de emisión' }}</p>
+          <h2>Factura electronica</h2>
+          <p>{{ inv.electronicInvoiceStatus === 'Emitida' ? 'Documento emitido' : 'Pendiente de emision' }}</p>
         </div>
-        <button type="button" class="fe-close" (click)="closeInvoice()">×</button>
+        <button type="button" class="fe-close" (click)="closeInvoice()">x</button>
       </header>
 
       <article class="fe-doc" id="fe-print">
@@ -99,7 +195,7 @@
             <strong>{{ inv.issuerName }}</strong>
             <p>NIT {{ inv.issuerTaxId }}</p>
             <p>{{ inv.issuerAddress }}</p>
-            <p>{{ inv.issuerPhone }} · {{ inv.issuerEmail }}</p>
+            <p>{{ inv.issuerPhone }} | {{ inv.issuerEmail }}</p>
           </div>
           <div class="fe-doc__meta">
             <p><span>Factura FE</span> {{ inv.electronicInvoiceNumber || 'Por asignar' }}</p>
@@ -111,12 +207,12 @@
 
         <div class="fe-doc__client">
           <strong>Cliente:</strong> {{ inv.customerName }}
-          @if (inv.customerTaxId) { <span> — NIT/CC {{ inv.customerTaxId }}</span> }
-          <span class="fe-doc__pay"> · Pago: {{ inv.paymentMethod }}</span>
+          @if (inv.customerTaxId) { <span> - NIT/CC {{ inv.customerTaxId }}</span> }
+          <span class="fe-doc__pay"> | Pago: {{ inv.paymentMethod }}</span>
         </div>
 
         <table class="fe-table">
-        <thead><tr><th>Descripción</th><th>Cant.</th><th>V. unitario</th><th>Total</th></tr></thead>
+        <thead><tr><th>Descripcion</th><th>Cant.</th><th>V. unitario</th><th>Total</th></tr></thead>
           <tbody>
             @for (l of inv.lines; track l.description) {
               <tr>
@@ -137,20 +233,15 @@
 
         @if (inv.cufe) {
           <div class="fe-cufe">
-            <small>CUFE (código único de factura electrónica)</small>
+            <small>CUFE</small>
             <code>{{ inv.cufe }}</code>
           </div>
         }
-
-        <p class="fe-note">
-          Representación interna compatible con el modelo DIAN (Colombia). La validación ante la DIAN requiere
-          proveedor tecnológico habilitado y certificado digital.
-        </p>
       </article>
 
       <footer class="fe-panel__actions">
         @if (inv.electronicInvoiceStatus !== 'Emitida') {
-          <button type="button" class="btn primary" (click)="emitInvoice()">Emitir factura electrónica</button>
+          <button type="button" class="btn primary" (click)="emitInvoice()">Emitir factura electronica</button>
         }
         <button type="button" class="btn primary" (click)="printPdf()">Imprimir factura</button>
         <button type="button" class="btn" (click)="downloadPdf()">Descargar PDF</button>

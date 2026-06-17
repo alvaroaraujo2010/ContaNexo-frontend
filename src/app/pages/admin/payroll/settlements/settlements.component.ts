@@ -1,20 +1,22 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { Employee, PayrollSettlement } from '../../../../core/models';
 import { ModuleHeaderComponent } from '../../../../shared/module-header/module-header.component';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-settlements',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ModuleHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ModuleHeaderComponent],
   templateUrl: './settlements.component.html',
   styleUrl: './settlements.component.scss'
 })
 export class SettlementsComponent implements OnInit {
   private svc = inject(PayrollService);
   private fb = inject(FormBuilder);
+  auth = inject(AuthService);
 
   settlements = signal<PayrollSettlement[]>([]);
   employees = signal<Employee[]>([]);
@@ -34,6 +36,8 @@ export class SettlementsComponent implements OnInit {
   });
 
   ngOnInit() { this.reload(); }
+
+  isAdmin() { return this.auth.hasRole(['Administrador']); }
 
   reload() {
     this.loading.set(true);

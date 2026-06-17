@@ -19,13 +19,16 @@ export class UsersComponent implements OnInit, OnDestroy {
   private navSub?: Subscription;
 
   items = signal<User[]>([]);
+  search = signal('');
   showForm = false;
+  editingId: number | null = null;
 
   form = this.fb.group({
     fullName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
-    role: ['Vendedor', Validators.required]
+    role: ['Vendedor', Validators.required],
+    isActive: [true]
   });
 
   ngOnInit() {
@@ -39,19 +42,59 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.api.loadList<User[]>('users', d => this.items.set(d)).subscribe();
   }
 
+  filteredItems() {
+    const term = this.search().trim().toLowerCase();
+    if (!term) return this.items();
+    return this.items().filter(u => `${u.fullName} ${u.email} ${u.role}`.toLowerCase().includes(term));
+  }
+
   save() {
     if (this.form.invalid) return;
+    const payload = this.form.getRawValue();
+    const request = this.editingId
+      ? this.api.put(`users/${this.editingId}`, { ...payload, password: payload.password || null })
+      : this.api.post('users', payload);
+
     this.api
-      .run(this.api.post('users', this.form.getRawValue()), {
-        success: 'Usuario creado correctamente',
-        error: 'No se pudo crear el usuario'
+      .run(request, {
+        success: this.editingId ? 'Usuario actualizado correctamente' : 'Usuario creado correctamente',
+        error: this.editingId ? 'No se pudo actualizar el usuario' : 'No se pudo crear el usuario'
       })
       .subscribe({
         next: () => {
-          this.showForm = false;
-          this.form.reset({ role: 'Vendedor' });
+          this.cancelEdit();
           this.reload();
         }
       });
+  }
+
+  edit(user: User) {
+    this.editingId = user.id;
+    this.showForm = true;
+    this.form.controls.password.clearValidators();
+    this.form.controls.password.updateValueAndValidity();
+    this.form.reset({
+      fullName: user.fullName,
+      email: user.email,
+      password: '',
+      role: user.role,
+      isActive: user.isActive
+    });
+  }
+
+  newUser() {
+    this.editingId = null;
+    this.showForm = true;
+    this.form.controls.password.setValidators(Validators.required);
+    this.form.controls.password.updateValueAndValidity();
+    this.form.reset({ role: 'Vendedor', isActive: true });
+  }
+
+  cancelEdit() {
+    this.editingId = null;
+    this.showForm = false;
+    this.form.controls.password.setValidators(Validators.required);
+    this.form.controls.password.updateValueAndValidity();
+    this.form.reset({ role: 'Vendedor', isActive: true });
   }
 }

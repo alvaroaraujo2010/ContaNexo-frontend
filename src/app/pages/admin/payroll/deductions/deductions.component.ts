@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { Deduction } from '../../../../core/models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-deductions',
@@ -21,6 +22,7 @@ export class DeductionsComponent implements OnInit, OnDestroy {
   private navSub?: Subscription;
 
   deductions = signal<Deduction[]>([]);
+  search = signal('');
   showForm = false;
   editingId: number | null = null;
   saving = false;
@@ -49,6 +51,12 @@ export class DeductionsComponent implements OnInit, OnDestroy {
       next: (data) => this.deductions.set(data),
       error: () => console.error('Error loading deductions')
     });
+  }
+
+  filteredDeductions() {
+    const term = this.search().trim().toLowerCase();
+    if (!term) return this.deductions();
+    return this.deductions().filter(d => `${d.name} ${d.type} ${d.description ?? ''}`.toLowerCase().includes(term));
   }
 
   openForm() {
@@ -92,12 +100,23 @@ export class DeductionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  delete(deduction: Deduction) {
-    if (confirm(`¿Eliminar deducción "${deduction.name}"?`)) {
-      this.payrollService.deleteDeduction(deduction.id).subscribe({
-        next: () => this.reload(),
-        error: () => console.error('Error deleting deduction')
-      });
-    }
+  async delete(deduction: Deduction) {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: 'Eliminar deducción',
+      text: `¿Eliminar deducción "${deduction.name}"?`,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+    if (!result.isConfirmed) return;
+
+    this.payrollService.deleteDeduction(deduction.id).subscribe({
+      next: () => {
+        Swal.fire({ icon: 'success', title: 'Deducción eliminada', timer: 1600, showConfirmButton: false });
+        this.reload();
+      },
+      error: () => Swal.fire('Error', 'No se pudo eliminar la deducción.', 'error')
+    });
   }
 }

@@ -17,11 +17,14 @@
   }
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Listado de categorías</h2><span>{{ items().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Listado de categorías</h2><span>{{ filteredItems().length }} de {{ items().length }} registro(s)</span></div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por nombre o descripción" [value]="search()" (input)="search.set($any($event.target).value)" />
+    </div>
     <table class="data">
       <thead><tr><th>Nombre</th><th>Descripción</th><th>Productos</th><th>Estado</th><th></th></tr></thead>
       <tbody>
-        @for (c of items(); track c.id) {
+        @for (c of filteredItems(); track c.id) {
           <tr>
             <td><strong>{{ c.name }}</strong></td>
             <td>{{ c.description }}</td>

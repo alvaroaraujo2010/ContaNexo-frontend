@@ -7,33 +7,61 @@
       <p>Entrada, salida o ajuste de inventario</p>
     </div>
     <div class="form-grid">
-      <label class="full">Producto
-        <select formControlName="productId">
-          <option [value]="0">Seleccione</option>
-          @for (p of products(); track p.id) {
-            <option [value]="p.id">{{ p.sku }} - {{ p.name }} (Stock: {{ p.stock }})</option>
-          }
-        </select>
+      <label class="full product-picker">Producto
+        <input
+          type="search"
+          placeholder="Buscar por codigo, nombre o categoria"
+          [value]="productSearch()"
+          [attr.maxlength]="limits.productSearch"
+          (focus)="productPickerOpen = true"
+          (blur)="closeProductPicker()"
+          (input)="searchProduct($any($event.target).value)"
+          autocomplete="off"
+          required
+        />
+        @if (productPickerOpen) {
+          <div class="product-picker__menu">
+            @for (p of visibleProducts(); track p.id) {
+              <button type="button" class="product-picker__option" (mousedown)="selectProduct(p)">
+                <strong>{{ p.sku }} - {{ p.name }}</strong>
+                <span>{{ p.categoryName }} | Stock: {{ p.stock }}</span>
+              </button>
+            } @empty {
+              <div class="product-picker__empty">No hay productos que coincidan con la busqueda.</div>
+            }
+          </div>
+        }
+        @if (fieldError('productId')) { <small class="field-error">{{ fieldError('productId') }}</small> }
       </label>
       <label>Tipo
-        <select formControlName="type">
+        <select formControlName="type" required>
           <option value="Entrada">Entrada</option>
           <option value="Salida">Salida</option>
           <option value="Ajuste">Ajuste</option>
         </select>
+        @if (fieldError('type')) { <small class="field-error">{{ fieldError('type') }}</small> }
       </label>
-      <label>Cantidad<input type="number" formControlName="quantity" /></label>
-      <label>Notas<input formControlName="notes" /></label>
+      <label>Cantidad
+        <input type="number" formControlName="quantity" min="1" [attr.max]="limits.quantity" required />
+        @if (fieldError('quantity')) { <small class="field-error">{{ fieldError('quantity') }}</small> }
+      </label>
+      <label>Notas
+        <input formControlName="notes" [attr.maxlength]="limits.notes" />
+        @if (fieldError('notes')) { <small class="field-error">{{ fieldError('notes') }}</small> }
+      </label>
     </div>
     <div class="form-actions"><button class="btn primary" type="submit">Registrar movimiento</button></div>
   </form>
 
   <section class="data-card">
-    <div class="data-card__head"><h2>Historial de movimientos</h2><span>{{ movements().length }} registro(s)</span></div>
+    <div class="data-card__head"><h2>Historial de movimientos</h2><span>{{ filteredMovements().length }} de {{ movements().length }} registro(s)</span></div>
+    <div class="list-search">
+      <input type="search" placeholder="Buscar por producto, tipo, referencia o notas" [attr.maxlength]="limits.movementSearch" [value]="movementSearch()" (input)="movementSearch.set($any($event.target).value)" />
+    </div>
     <table class="data">
       <thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Antes</th><th>Despues</th><th>Ref.</th></tr></thead>
       <tbody>
-        @for (m of movements(); track m.id) {
+        @for (m of filteredMovements(); track m.id) {
           <tr>
             <td>{{ m.createdAt | date:'short' }}</td>
             <td><strong>{{ m.productName }}</strong></td>

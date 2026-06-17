@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { ModuleHeaderComponent } from '../../../shared/module-header/module-head
 @Component({
   selector: 'app-accounting',
   standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe, ModuleHeaderComponent],
+  imports: [ReactiveFormsModule, FormsModule, CurrencyPipe, DatePipe, ModuleHeaderComponent],
   templateUrl: './accounting.component.html'
 })
 export class AccountingComponent implements OnInit, OnDestroy {
@@ -22,6 +22,8 @@ export class AccountingComponent implements OnInit, OnDestroy {
   tab: 'accounts' | 'journal' | 'trial' = 'accounts';
   accounts = signal<Account[]>([]);
   journal = signal<JournalEntry[]>([]);
+  accountSearch = signal('');
+  journalSearch = signal('');
   trial = signal<TrialBalance | null>(null);
   showAccountForm = false;
   showJournalForm = false;
@@ -63,6 +65,18 @@ export class AccountingComponent implements OnInit, OnDestroy {
 
   loadTrial() {
     this.api.loadList<TrialBalance>('accounting/trial-balance', d => this.trial.set(d)).subscribe();
+  }
+
+  filteredAccounts() {
+    const term = this.accountSearch().trim().toLowerCase();
+    if (!term) return this.accounts();
+    return this.accounts().filter(a => `${a.code} ${a.name} ${a.type}`.toLowerCase().includes(term));
+  }
+
+  filteredJournal() {
+    const term = this.journalSearch().trim().toLowerCase();
+    if (!term) return this.journal();
+    return this.journal().filter(j => `${j.entryNumber} ${j.description} ${j.reference ?? ''} ${j.status}`.toLowerCase().includes(term));
   }
 
   saveAccount() {

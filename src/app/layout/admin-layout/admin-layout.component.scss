@@ -39,6 +39,28 @@
   }
 }
 
+.tenant-card {
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 12px;
+  background: rgba(14, 165, 233, 0.08);
+
+  span,
+  small {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.72rem;
+  }
+
+  strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 0.95rem;
+    margin: 0.2rem 0;
+  }
+}
+
 nav {
   display: flex;
   flex-direction: column;
@@ -74,31 +96,82 @@ nav {
   }
 }
 
-.sidebar-foot {
-  border-top: 1px solid #334155;
-  padding-top: 1rem;
-  font-size: 0.85rem;
-  button, a {
-    display: block;
-    width: 100%;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 6px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 0.85rem;
-  }
-  button { background: #334155; color: #fff; border: none; cursor: pointer; }
-  a { color: #94a3b8; }
-}
-
 .content {
   flex: 1;
   padding: 1.5rem 2rem;
   overflow: auto;
 }
 
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.topbar-link {
+  color: #475569;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+
+  button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    background: #e2e8f0;
+    color: #0f172a;
+    cursor: pointer;
+    font-size: 0.82rem;
+  }
+
+  .logout {
+    background: #0f172a;
+    color: #fff;
+  }
+}
+
+.user-menu__identity {
+  padding: 0 0.35rem 0 0.65rem;
+  text-align: right;
+
+  strong,
+  small {
+    display: block;
+  }
+
+  strong {
+    color: #0f172a;
+    font-size: 0.9rem;
+  }
+
+  small {
+    color: #64748b;
+    font-size: 0.72rem;
+  }
+}
+
 @media (max-width: 900px) {
   .admin-shell { flex-direction: column; }
   .sidebar { width: 100%; }
+  .content { padding: 1rem; }
+  .topbar { justify-content: stretch; }
+  .topbar-link { display: none; }
+  .user-menu {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 14px;
+    flex-wrap: wrap;
+  }
 }

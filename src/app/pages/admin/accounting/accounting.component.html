@@ -24,11 +24,14 @@
         </form>
       }
       <section class="data-card">
-        <div class="data-card__head"><h2>Plan de cuentas</h2><span>{{ accounts().length }} cuenta(s)</span></div>
+        <div class="data-card__head"><h2>Plan de cuentas</h2><span>{{ filteredAccounts().length }} de {{ accounts().length }} cuenta(s)</span></div>
+        <div class="list-search">
+          <input type="search" placeholder="Buscar por código, nombre o tipo" [value]="accountSearch()" (input)="accountSearch.set($any($event.target).value)" />
+        </div>
         <table class="data">
         <thead><tr><th>Código</th><th>Nombre</th><th>Tipo</th></tr></thead>
           <tbody>
-            @for (a of accounts(); track a.id) {
+            @for (a of filteredAccounts(); track a.id) {
               <tr><td><strong>{{ a.code }}</strong></td><td>{{ a.name }}</td><td>{{ a.type }}</td></tr>
             } @empty {
               <tr><td colspan="3"><div class="empty-state"><strong>Sin cuentas</strong></div></td></tr>
@@ -49,7 +52,7 @@
         <div class="form-grid">
           <label class="full">Descripción<input formControlName="description" /></label>
           <label>Referencia<input formControlName="reference" /></label>
-          <label>Cuenta<select [formControl]="lineForm.controls.accountId"><option [value]="0">Seleccione</option>@for (a of accounts(); track a.id) { <option [value]="a.id">{{ a.code }} - {{ a.name }}</option> }</select></label>
+          <label>Cuenta<select [formControl]="lineForm.controls.accountId"><option [ngValue]="0">Seleccione</option>@for (a of accounts(); track a.id) { <option [ngValue]="a.id">{{ a.code }} - {{ a.name }}</option> }</select></label>
           <label>Débito<input type="number" [formControl]="lineForm.controls.debit" /></label>
           <label>Crédito<input type="number" [formControl]="lineForm.controls.credit" /></label>
         </div>
@@ -63,11 +66,14 @@
       }
     }
     <section class="data-card">
-      <div class="data-card__head"><h2>Libro de asientos</h2><span>{{ journal().length }} registro(s)</span></div>
+      <div class="data-card__head"><h2>Libro de asientos</h2><span>{{ filteredJournal().length }} de {{ journal().length }} registro(s)</span></div>
+      <div class="list-search">
+        <input type="search" placeholder="Buscar por número, descripción, referencia o estado" [value]="journalSearch()" (input)="journalSearch.set($any($event.target).value)" />
+      </div>
       <table class="data">
         <thead><tr><th>Número</th><th>Fecha</th><th>Descripción</th><th>Débito</th><th>Crédito</th></tr></thead>
         <tbody>
-          @for (j of journal(); track j.id) {
+          @for (j of filteredJournal(); track j.id) {
             <tr>
               <td><strong>{{ j.entryNumber }}</strong></td>
               <td>{{ j.entryDate | date:'short' }}</td>

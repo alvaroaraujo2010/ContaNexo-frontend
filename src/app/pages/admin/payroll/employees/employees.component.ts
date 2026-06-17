@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { ModuleHeaderComponent } from '../../../../shared/module-header/module-header.component';
 import { Employee } from '../../../../core/models';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-employees',
@@ -15,8 +16,10 @@ import { Employee } from '../../../../core/models';
 export class EmployeesComponent implements OnInit {
   private svc = inject(PayrollService);
   private fb = inject(FormBuilder);
+  auth = inject(AuthService);
 
   employees = signal<Employee[]>([]);
+  search = signal('');
   loading = signal(true);
   showForm = false;
   editingId: number | null = null;
@@ -65,12 +68,20 @@ export class EmployeesComponent implements OnInit {
 
   ngOnInit() { this.reload(); }
 
+  isAdmin() { return this.auth.hasRole(['Administrador']); }
+
   reload() {
     this.loading.set(true);
     this.svc.getEmployees().subscribe({
       next: data => { this.employees.set(data); this.loading.set(false); },
       error: () => this.loading.set(false)
     });
+  }
+
+  filteredEmployees() {
+    const term = this.search().trim().toLowerCase();
+    if (!term) return this.employees();
+    return this.employees().filter(e => `${e.name} ${e.taxId ?? ''} ${e.email ?? ''} ${e.position ?? ''} ${e.department ?? ''}`.toLowerCase().includes(term));
   }
 
   openForm() {
