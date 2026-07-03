@@ -33,7 +33,7 @@ export class TenantsComponent implements OnInit {
     isActive: [true],
     adminFullName: ['', Validators.required],
     adminEmail: ['', [Validators.required, Validators.email]],
-    adminPassword: ['Demo1234*', [Validators.required, Validators.minLength(8)]]
+    adminPassword: ['', [Validators.required, Validators.minLength(8)]]
   });
 
   ngOnInit() {
@@ -90,7 +90,7 @@ export class TenantsComponent implements OnInit {
     this.showForm = true;
     this.form.controls.code.enable();
     this.setAdminValidators(true);
-    this.form.reset({ plan: 'basico', commercialStatus: 'trial', billingCycle: 'manual', isActive: true, adminPassword: 'Demo1234*' });
+    this.form.reset({ plan: 'basico', commercialStatus: 'trial', billingCycle: 'manual', isActive: true, adminPassword: '' });
   }
 
   edit(tenant: Tenant) {
@@ -120,7 +120,7 @@ export class TenantsComponent implements OnInit {
     this.showForm = false;
     this.form.controls.code.enable();
     this.setAdminValidators(true);
-    this.form.reset({ plan: 'basico', commercialStatus: 'trial', billingCycle: 'manual', isActive: true, adminPassword: 'Demo1234*' });
+    this.form.reset({ plan: 'basico', commercialStatus: 'trial', billingCycle: 'manual', isActive: true, adminPassword: '' });
   }
 
   private setAdminValidators(required: boolean) {

@@ -20,9 +20,9 @@ export class LoginComponent {
   loading = false;
 
   form = this.fb.group({
-    businessCode: ['contanexo', Validators.required],
-    username: ['administrador', Validators.required],
-    password: ['ingAlv4r0', Validators.required]
+    businessCode: ['', Validators.required],
+    username: ['', Validators.required],
+    password: ['', Validators.required]
   });
 
   submit() {
