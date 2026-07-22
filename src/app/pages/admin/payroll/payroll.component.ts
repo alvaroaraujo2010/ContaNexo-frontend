@@ -94,7 +94,10 @@ export class PayrollComponent implements OnInit, OnDestroy {
       cancelButtonText: 'Cancelar'
     });
     if (!result.isConfirmed) return;
-    this.svc.processPayroll(p.id).subscribe({ next: () => this.reload() });
+    this.svc.processPayroll(p.id).subscribe({
+      next: () => this.reload(),
+      error: () => Swal.fire('Error', 'No se pudo procesar la nómina', 'error')
+    });
   }
 
   async payPayroll(p: Payroll) {

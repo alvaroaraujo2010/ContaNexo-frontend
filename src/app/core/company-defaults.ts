@@ -9,5 +9,6 @@ export const DEFAULT_PUBLIC_COMPANY: Company = {
   address: 'Centro Empresarial',
   phone: '+57 300 000 0000',
   email: 'contacto@contanexo.com',
-  currency: 'COP'
+  currency: 'COP',
+  dianTestMode: true
 };

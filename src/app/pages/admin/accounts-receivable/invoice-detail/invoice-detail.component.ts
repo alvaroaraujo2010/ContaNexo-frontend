@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountsReceivableService } from '../../../../core/services/accounts-receivable.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Invoice, Payment, PaymentPlan } from '../../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -14,6 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class InvoiceDetailComponent implements OnInit {
   private arService = inject(AccountsReceivableService);
+  private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -36,7 +38,7 @@ export class InvoiceDetailComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        console.error('Error loading invoice');
+        this.toast.error('Error al cargar factura');
         this.loading.set(false);
       }
     });

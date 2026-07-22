@@ -32,6 +32,7 @@ import { RemindersComponent } from './pages/admin/accounts-receivable/reminders/
 import { ReportsComponent } from './pages/admin/accounts-receivable/reports/reports.component';
 
 import { PlanModulesComponent } from './pages/admin/plan-modules/plan-modules.component';
+import { AuditLogComponent } from './pages/admin/audit-log/audit-log.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -42,36 +43,37 @@ export const routes: Routes = [
     canActivate: [authGuard],
     canActivateChild: [authChildGuard],
     children: [
-      { path: '', component: DashboardComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'Almacen', 'SuperUsuario'] } },
-      { path: 'productos', component: ProductsComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'] } },
-      { path: 'categorias', component: CategoriesComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'] } },
-      { path: 'inventario', component: InventoryComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'] } },
-      { path: 'proveedores', component: SuppliersComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'] } },
-      { path: 'clientes', component: CustomersComponent, data: { roles: ['Administrador', 'Vendedor', 'SuperUsuario'] } },
-      { path: 'compras', component: PurchasesComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'] } },
-      { path: 'ventas', component: SalesComponent, data: { roles: ['Administrador', 'Vendedor', 'SuperUsuario'] } },
-      { path: 'contabilidad', component: AccountingComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
+      { path: '', component: DashboardComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'Almacen', 'SuperUsuario'], moduleKey: 'dashboard' } },
+      { path: 'productos', component: ProductsComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'], moduleKey: 'products' } },
+      { path: 'categorias', component: CategoriesComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'], moduleKey: 'categories' } },
+      { path: 'inventario', component: InventoryComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'], moduleKey: 'inventory' } },
+      { path: 'proveedores', component: SuppliersComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'], moduleKey: 'suppliers' } },
+      { path: 'clientes', component: CustomersComponent, data: { roles: ['Administrador', 'Vendedor', 'SuperUsuario'], moduleKey: 'customers' } },
+      { path: 'compras', component: PurchasesComponent, data: { roles: ['Administrador', 'Almacen', 'SuperUsuario'], moduleKey: 'purchases' } },
+      { path: 'ventas', component: SalesComponent, data: { roles: ['Administrador', 'Vendedor', 'SuperUsuario'], moduleKey: 'sales' } },
+      { path: 'contabilidad', component: AccountingComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'accounting' } },
       { path: 'usuarios', component: UsersComponent, data: { roles: ['Administrador', 'SuperUsuario'] } },
       { path: 'negocios', component: TenantsComponent, data: { roles: ['Administrador', 'SuperUsuario'] } },
-      { path: 'empresa', component: CompanyComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
+      { path: 'empresa', component: CompanyComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'company' } },
       { path: 'plan-modulos', component: PlanModulesComponent, data: { roles: ['SuperUsuario'] } },
+      { path: 'auditoria', component: AuditLogComponent, data: { roles: ['Administrador', 'SuperUsuario'] } },
       // Módulo de Nómina
-      { path: 'nomina', component: PayrollComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'nomina/:id', component: PayrollDetailsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'nomina-empleados', component: EmployeesComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'nomina-deducciones', component: DeductionsComponent, data: { roles: ['Administrador', 'SuperUsuario'] } },
-      { path: 'nomina-seguridad-social', component: SocialSecurityComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'nomina-pagos', component: PaymentRecordsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'nomina-parametros', component: LegalParametersComponent, data: { roles: ['Administrador', 'SuperUsuario'] } },
-      { path: 'nomina-provisiones', component: ProvisionsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'nomina-liquidaciones', component: SettlementsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
+      { path: 'nomina', component: PayrollComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll' } },
+      { path: 'nomina/:id', component: PayrollDetailsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll' } },
+      { path: 'nomina-empleados', component: EmployeesComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll-employees' } },
+      { path: 'nomina-deducciones', component: DeductionsComponent, data: { roles: ['Administrador', 'SuperUsuario'], moduleKey: 'payroll-deductions' } },
+      { path: 'nomina-seguridad-social', component: SocialSecurityComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll-social-security' } },
+      { path: 'nomina-pagos', component: PaymentRecordsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll-payments' } },
+      { path: 'nomina-parametros', component: LegalParametersComponent, data: { roles: ['Administrador', 'SuperUsuario'], moduleKey: 'payroll-parameters' } },
+      { path: 'nomina-provisiones', component: ProvisionsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll-provisions' } },
+      { path: 'nomina-liquidaciones', component: SettlementsComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'payroll-settlements' } },
       // Módulo de Cuentas por Cobrar
-      { path: 'cuentas-por-cobrar', component: AccountsReceivableComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'] } },
-      { path: 'cuentas-por-cobrar/:id', component: InvoiceDetailComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'] } },
-      { path: 'cuentas-por-cobrar/pago/:id', component: PaymentTrackingComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'] } },
-      { path: 'cuentas-por-cobrar/plan-pago/:id', component: PaymentPlanComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'] } },
-      { path: 'cuentas-por-cobrar-recordatorios', component: RemindersComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'] } },
-      { path: 'cuentas-por-cobrar-reportes', component: ReportsComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'] } }
+      { path: 'cuentas-por-cobrar', component: AccountsReceivableComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'], moduleKey: 'accounts-receivable' } },
+      { path: 'cuentas-por-cobrar/:id', component: InvoiceDetailComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'], moduleKey: 'accounts-receivable' } },
+      { path: 'cuentas-por-cobrar/pago/:id', component: PaymentTrackingComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'], moduleKey: 'accounts-receivable' } },
+      { path: 'cuentas-por-cobrar/plan-pago/:id', component: PaymentPlanComponent, data: { roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'accounts-receivable' } },
+      { path: 'cuentas-por-cobrar-recordatorios', component: RemindersComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'], moduleKey: 'accounts-receivable-reminders' } },
+      { path: 'cuentas-por-cobrar-reportes', component: ReportsComponent, data: { roles: ['Administrador', 'Contador', 'Vendedor', 'SuperUsuario'], moduleKey: 'accounts-receivable-reports' } }
     ]
   },
   { path: '**', redirectTo: '' }

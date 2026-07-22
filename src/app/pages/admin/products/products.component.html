@@ -23,6 +23,8 @@
         <label>Stock actual<input type="number" min="0" formControlName="stock" /></label>
         <label>Stock minimo<input type="number" min="0" formControlName="minStock" /></label>
         <label>Unidad<input formControlName="unit" /></label>
+        <label>F. Vencimiento<input type="date" formControlName="expirationDate" /></label>
+        <label>Fabricante<input formControlName="manufacturer" /></label>
         <label class="full">Descripcion<textarea formControlName="description" rows="2"></textarea></label>
       </div>
       <div class="form-actions"><button class="btn primary" type="submit" [disabled]="saving">{{ saving ? 'Guardando...' : (editingId ? 'Actualizar' : 'Guardar') }}</button></div>
@@ -34,22 +36,24 @@
     <div class="list-search">
       <input type="search" placeholder="Buscar por SKU, nombre o categoria" [value]="search()" (input)="search.set($any($event.target).value)" />
     </div>
-    <table class="data">
-      <thead><tr><th>SKU</th><th>Nombre</th><th>Categoria</th><th>Stock</th><th>Precio</th><th></th></tr></thead>
-      <tbody>
-        @for (p of filteredItems(); track p.id) {
-          <tr>
-            <td><strong>{{ p.sku }}</strong></td>
-            <td>{{ p.name }} @if (isLowStock(p)) { <span class="badge-warn">Bajo</span> }</td>
-            <td>{{ p.categoryName }}</td>
-            <td>{{ displayStock(p) }}</td>
-            <td>{{ p.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-            <td><button class="btn sm" type="button" (click)="edit(p)">Editar</button></td>
-          </tr>
-        } @empty {
-          <tr><td colspan="6"><div class="empty-state"><strong>Sin productos</strong><p>Registre el primer producto del catalogo.</p></div></td></tr>
-        }
-      </tbody>
-    </table>
+      <table class="data">
+        <thead><tr><th>SKU</th><th>Nombre</th><th>Categoria</th><th>Stock</th><th>Precio</th><th>Fabricante</th><th>Vence</th><th></th></tr></thead>
+        <tbody>
+          @for (p of filteredItems(); track p.id) {
+            <tr>
+              <td><strong>{{ p.sku }}</strong></td>
+              <td>{{ p.name }} @if (isLowStock(p)) { <span class="badge-warn">Bajo</span> }</td>
+              <td>{{ p.categoryName }}</td>
+              <td>{{ displayStock(p) }}</td>
+              <td>{{ p.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+              <td>{{ p.manufacturer }}</td>
+              <td>{{ p.expirationDate ? (p.expirationDate | date:'dd/MM/yyyy') : '' }}</td>
+              <td><button class="btn sm" type="button" (click)="edit(p)">Editar</button></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="8"><div class="empty-state"><strong>Sin productos</strong><p>Registre el primer producto del catalogo.</p></div></td></tr>
+          }
+        </tbody>
+      </table>
   </section>
 </div>

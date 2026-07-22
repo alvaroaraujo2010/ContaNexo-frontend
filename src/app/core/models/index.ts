@@ -38,6 +38,38 @@ export interface Company {
   logoUrl?: string;
   taxId?: string;
   currency: string;
+  dianSoftwareId?: string;
+  dianTestMode: boolean;
+  municipalityCode?: string;
+  economicActivityCode?: string;
+  registrationCode?: string;
+}
+
+export interface DianResolution {
+  id: number;
+  resolutionNumber: string;
+  prefix: string;
+  fromNumber: number;
+  toNumber: number;
+  currentNumber: number;
+  issuedAt: string;
+  expiresAt: string;
+  technicalKey?: string;
+  isActive: boolean;
+}
+
+export interface DianSendStatus {
+  saleId: number;
+  documentNumber: string;
+  electronicInvoiceNumber?: string;
+  electronicInvoiceStatus: string;
+  cufe?: string;
+  dianTrackingId?: string;
+  dianResponseCode?: string;
+  dianResponseMessage?: string;
+  dianSentAt?: string;
+  dianResponseAt?: string;
+  attempts: number;
 }
 
 export interface Dashboard {
@@ -49,6 +81,7 @@ export interface Dashboard {
   suppliersCount: number;
   recentSales: { id: number; documentNumber: string; customerName?: string; total: number; saleDate: string }[];
   lowStockProducts: { id: number; sku: string; name: string; stock: number; minStock: number }[];
+  expiringProducts: { id: number; sku: string; name: string; stock: number; unit: string; expirationDate: string; daysLeft: number }[];
 }
 
 export interface Category {
@@ -73,6 +106,8 @@ export interface Product {
   unit: string;
   isActive: boolean;
   lowStock: boolean;
+  expirationDate?: string;
+  manufacturer?: string;
 }
 
 export interface Supplier {

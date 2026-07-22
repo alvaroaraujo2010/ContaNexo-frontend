@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, ViewChild, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
@@ -10,7 +10,7 @@ import { ModuleHeaderComponent } from '../../../shared/module-header/module-head
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CurrencyPipe, ModuleHeaderComponent],
+  imports: [ReactiveFormsModule, FormsModule, CurrencyPipe, DatePipe, ModuleHeaderComponent],
   templateUrl: './products.component.html'
 })
 export class ProductsComponent implements OnInit, OnDestroy {
@@ -38,6 +38,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
     stock: [0, Validators.min(0)],
     minStock: [5],
     unit: ['UND'],
+    expirationDate: [''],
+    manufacturer: [''],
     isActive: [true]
   });
 
@@ -74,7 +76,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   filteredItems() {
     const term = this.search().trim().toLowerCase();
     if (!term) return this.items();
-    return this.items().filter(p => `${p.sku} ${p.name} ${p.categoryName}`.toLowerCase().includes(term));
+    return this.items().filter(p => `${p.sku} ${p.name} ${p.categoryName} ${p.manufacturer ?? ''}`.toLowerCase().includes(term));
   }
 
   displayStock(p: Product) {
@@ -99,6 +101,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
       stock: this.effectiveStock(p),
       minStock: p.minStock,
       unit: legacyStock !== null ? 'UND' : p.unit,
+      expirationDate: p.expirationDate ? p.expirationDate.substring(0, 10) : '',
+      manufacturer: p.manufacturer || '',
       isActive: p.isActive
     });
     setTimeout(() => this.productForm?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' }));
@@ -153,7 +157,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     });
     this.showForm = false;
     this.editingId = null;
-    this.form.reset({ stock: 0, minStock: 5, unit: 'UND', categoryId: 0, isActive: true });
+    this.form.reset({ stock: 0, minStock: 5, unit: 'UND', categoryId: 0, expirationDate: '', manufacturer: '', isActive: true });
     this.saving = false;
     this.reloadProducts();
   }

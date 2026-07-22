@@ -45,6 +45,7 @@ export class AdminLayoutComponent implements OnInit {
     { path: '/admin/negocios', label: 'Negocios', icon: 'empresa', roles: ['Administrador', 'SuperUsuario'], platformOnly: true },
     { path: '/admin/usuarios', label: 'Usuarios', icon: 'usuarios', roles: ['Administrador', 'SuperUsuario'] },
     { path: '/admin/plan-modulos', label: 'Módulos por Plan', icon: 'modulos', roles: ['SuperUsuario'] },
+    { path: '/admin/auditoria', label: 'Auditoría', icon: 'auditoria', roles: ['Administrador', 'SuperUsuario'] },
     { path: '/admin/empresa', label: 'Empresa', icon: 'empresa', roles: ['Administrador', 'Contador', 'SuperUsuario'], moduleKey: 'company' }
   ];
 

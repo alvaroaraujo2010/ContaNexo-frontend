@@ -411,7 +411,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   emitInvoice() {
     const inv = this.invoice();
-    if (!inv || inv.electronicInvoiceStatus === 'Emitida') return;
+    if (!inv || inv.electronicInvoiceStatus !== 'Borrador') return;
     this.api
       .run(this.api.post<ElectronicInvoice>(`sales/${inv.saleId}/electronic-invoice/emit`, {}), {
         success: 'Factura electronica emitida y asiento contable generado',
@@ -421,6 +421,30 @@ export class SalesComponent implements OnInit, OnDestroy {
         next: updated => {
           this.invoice.set(updated);
           this.reload();
+        }
+      });
+  }
+
+  sendToDian() {
+    const inv = this.invoice();
+    if (!inv || inv.electronicInvoiceStatus !== 'Emitida') return;
+    this.invoiceLoading = true;
+    this.api.post<ElectronicInvoice>(`dian/sales/${inv.saleId}/send`, {})
+      .subscribe({
+        next: updated => {
+          this.invoice.set(updated);
+          this.reload();
+          this.invoiceLoading = false;
+          const status = updated.electronicInvoiceStatus;
+          if (status === 'Enviada') {
+            this.toast.success('Factura enviada a DIAN correctamente');
+          } else {
+            this.toast.error(`DIAN rechazó la factura: ${updated.cufe || ''}`);
+          }
+        },
+        error: err => {
+          this.invoiceLoading = false;
+          this.toast.error(err?.error?.message || 'No se pudo enviar a DIAN');
         }
       });
   }

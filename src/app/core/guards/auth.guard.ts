@@ -14,6 +14,8 @@ export const authChildGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const roles = route.data?.['roles'] as string[] | undefined;
   if (!auth.hasRole(roles)) return router.createUrlTree(['/admin']);
+  const moduleKey = route.data?.['moduleKey'] as string | undefined;
+  if (!auth.isModuleEnabled(moduleKey)) return router.createUrlTree(['/admin']);
   return true;
 };
 

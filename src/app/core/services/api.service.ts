@@ -22,6 +22,10 @@ export class ApiService {
     return this.http.put<T>(`${this.base}/${path}`, body);
   }
 
+  patch<T>(path: string, body: unknown): Observable<T> {
+    return this.http.patch<T>(`${this.base}/${path}`, body);
+  }
+
   delete(path: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/${path}`);
   }

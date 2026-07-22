@@ -22,7 +22,7 @@ export class LoginComponent {
   form = this.fb.group({
     businessCode: ['', Validators.required],
     username: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', [Validators.required, Validators.minLength(8)]]
   });
 
   submit() {

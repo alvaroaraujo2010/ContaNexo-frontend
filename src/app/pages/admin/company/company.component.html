@@ -1,13 +1,18 @@
 <div class="module-page">
   <app-module-header
     title="Empresa"
-    subtitle="Datos comerciales que se muestran en la pagina publica de ContaNexo"
+    subtitle="Configuracion general y facturacion electronica DIAN"
     badge="Configuración" />
 
+  <div class="tabs">
+    <button [ngClass]="{active: activeTab==='general'}" (click)="activeTab='general'">General</button>
+    <button [ngClass]="{active: activeTab==='dian'}" (click)="activeTab='dian'">DIAN</button>
+  </div>
+
+  @if (activeTab === 'general') {
   <form class="card-form" [formGroup]="form" (ngSubmit)="save()">
     <div class="card-form__head">
       <h3>Información del negocio</h3>
-      <p>Estos datos se muestran en la pagina publica</p>
     </div>
     <div class="form-grid">
       <label>Nombre comercial<input formControlName="businessName" /></label>
@@ -18,10 +23,87 @@
       <label>Email<input formControlName="email" /></label>
       <label>Sitio web<input formControlName="website" /></label>
       <label class="full">Dirección<input formControlName="address" /></label>
-      <label class="full">Descripción pública<textarea formControlName="description" rows="4"></textarea></label>
+      <label class="full">Descripción<textarea formControlName="description" rows="4"></textarea></label>
     </div>
     <div class="form-actions">
       <button class="btn primary" type="submit">Guardar cambios</button>
     </div>
   </form>
+  }
+
+  @if (activeTab === 'dian') {
+  <form class="card-form" [formGroup]="dianForm" (ngSubmit)="saveDian()">
+    <div class="card-form__head">
+      <h3>Credenciales DIAN</h3>
+      <p>Software ID y PIN del proveedor tecnológico habilitado por DIAN</p>
+    </div>
+    <div class="form-grid">
+      <label>Software ID<input formControlName="dianSoftwareId" /></label>
+      <label>Software PIN<input formControlName="dianSoftwarePin" type="password" /></label>
+      <label>Ruta certificado (.pfx)<input formControlName="dianCertificatePath" /></label>
+      <label>Contraseña certificado<input formControlName="dianCertificatePassword" type="password" /></label>
+      <label>API URL DIAN<input formControlName="dianApiUrl" placeholder="https://vpfe-hab.dian.gov.co/..." /></label>
+      <label>
+        Modo prueba
+        <select formControlName="dianTestMode">
+          <option [value]="true">Habilitación (pruebas)</option>
+          <option [value]="false">Producción</option>
+        </select>
+      </label>
+      <label>Código municipio<input formControlName="municipalityCode" placeholder="11001" /></label>
+      <label>Actividad económica<input formControlName="economicActivityCode" /></label>
+      <label>Código registro<input formControlName="registrationCode" /></label>
+    </div>
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Guardar configuración DIAN</button>
+    </div>
+  </form>
+
+  <div class="card-form" style="margin-top:1.5rem">
+    <div class="card-form__head">
+      <h3>Resoluciones DIAN</h3>
+      <p>Resoluciones de autorización de numeración de facturación electrónica</p>
+    </div>
+
+    @if (!resolutions.length) {
+      <p class="text-muted" style="padding:1rem">No hay resoluciones registradas. Cree una para emitir facturas electrónicas.</p>
+    }
+
+    @for (r of resolutions; track r.id) {
+    <div class="resolution-row">
+      <div>
+        <strong>{{r.resolutionNumber}}</strong> ({{r.prefix}}{{r.fromNumber}} - {{r.prefix}}{{r.toNumber}})
+        <br><small>Actual: {{r.prefix}}{{r.currentNumber}} | Restan: {{remaining(r)}} | Vence: {{r.expiresAt | date}}</small>
+        @if (!r.isActive) { <span class="badge badge-danger">Inactiva</span> }
+      </div>
+      @if (r.isActive) {
+      <button class="btn btn-sm btn-outline" (click)="deactivateResolution(r.id)">Desactivar</button>
+      }
+    </div>
+    }
+
+    @if (showNewResolution) {
+    <div style="border-top:1px solid var(--border);padding:1rem">
+      <h4>Nueva resolución</h4>
+      <div class="form-grid">
+        <label>Número resolución<input formControlName="resolutionNumber" [formGroup]="resolutionForm" /></label>
+        <label>Prefijo<input formControlName="prefix" [formGroup]="resolutionForm" placeholder="FE" /></label>
+        <label>Desde número<input formControlName="fromNumber" type="number" [formGroup]="resolutionForm" /></label>
+        <label>Hasta número<input formControlName="toNumber" type="number" [formGroup]="resolutionForm" /></label>
+        <label>Fecha emisión<input formControlName="issuedAt" type="date" [formGroup]="resolutionForm" /></label>
+        <label>Fecha vencimiento<input formControlName="expiresAt" type="date" [formGroup]="resolutionForm" /></label>
+        <label class="full">Clave técnica (Technical Key)<input formControlName="technicalKey" [formGroup]="resolutionForm" /></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn primary" (click)="createResolution()">Crear resolución</button>
+        <button class="btn" (click)="showNewResolution=false">Cancelar</button>
+      </div>
+    </div>
+    } @else {
+    <div class="form-actions">
+      <button class="btn" (click)="showNewResolution=true">+ Nueva resolución</button>
+    </div>
+    }
+  </div>
+  }
 </div>

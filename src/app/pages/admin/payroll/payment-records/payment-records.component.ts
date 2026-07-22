@@ -4,6 +4,7 @@ import { ModuleHeaderComponent } from '../../../../shared/module-header/module-h
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PayrollService } from '../../../../core/services/payroll.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { PaymentRecord } from '../../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -16,6 +17,7 @@ import Swal from 'sweetalert2';
 })
 export class PaymentRecordsComponent implements OnInit, OnDestroy {
   private payrollService = inject(PayrollService);
+  private toast = inject(ToastService);
   private router = inject(Router);
   private navSub?: Subscription;
 
@@ -36,7 +38,7 @@ export class PaymentRecordsComponent implements OnInit, OnDestroy {
   reload() {
     this.payrollService.getPaymentRecords().subscribe({
       next: (data) => this.records.set(data),
-      error: () => console.error('Error loading payment records')
+      error: () => this.toast.error('Error al cargar registros de pago')
     });
   }
 

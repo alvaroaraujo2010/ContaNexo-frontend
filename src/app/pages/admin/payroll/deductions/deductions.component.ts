@@ -5,6 +5,7 @@ import { ModuleHeaderComponent } from '../../../../shared/module-header/module-h
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PayrollService } from '../../../../core/services/payroll.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Deduction } from '../../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -17,6 +18,7 @@ import Swal from 'sweetalert2';
 })
 export class DeductionsComponent implements OnInit, OnDestroy {
   private payrollService = inject(PayrollService);
+  private toast = inject(ToastService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private navSub?: Subscription;
@@ -49,7 +51,7 @@ export class DeductionsComponent implements OnInit, OnDestroy {
   reload() {
     this.payrollService.getDeductions().subscribe({
       next: (data) => this.deductions.set(data),
-      error: () => console.error('Error loading deductions')
+      error: () => this.toast.error('Error al cargar deducciones')
     });
   }
 

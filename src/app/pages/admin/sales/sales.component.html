@@ -240,8 +240,19 @@
       </article>
 
       <footer class="fe-panel__actions">
-        @if (inv.electronicInvoiceStatus !== 'Emitida') {
+        @if (inv.electronicInvoiceStatus === 'Borrador') {
           <button type="button" class="btn primary" (click)="emitInvoice()">Emitir factura electronica</button>
+        }
+        @if (inv.electronicInvoiceStatus === 'Emitida') {
+          <button type="button" class="btn primary" (click)="sendToDian()" [disabled]="invoiceLoading">
+            {{ invoiceLoading ? 'Enviando...' : 'Enviar a DIAN' }}
+          </button>
+        }
+        @if (inv.electronicInvoiceStatus === 'Enviada' || inv.electronicInvoiceStatus === 'Rechazada') {
+          <span class="badge" [class.badge-ok]="inv.electronicInvoiceStatus==='Enviada'"
+                [class.badge-danger]="inv.electronicInvoiceStatus==='Rechazada'">
+            {{ inv.electronicInvoiceStatus === 'Enviada' ? 'Aceptada por DIAN' : 'Rechazada por DIAN' }}
+          </span>
         }
         <button type="button" class="btn primary" (click)="printPdf()">Imprimir factura</button>
         <button type="button" class="btn" (click)="downloadPdf()">Descargar PDF</button>

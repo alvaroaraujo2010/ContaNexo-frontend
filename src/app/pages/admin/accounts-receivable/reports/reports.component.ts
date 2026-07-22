@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModuleHeaderComponent } from '../../../../shared/module-header/module-header.component';
 import { AccountsReceivableService } from '../../../../core/services/accounts-receivable.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AgingReport, AccountReceivableSummary } from '../../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -14,6 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class ReportsComponent implements OnInit {
   private arService = inject(AccountsReceivableService);
+  private toast = inject(ToastService);
 
   agingReport = signal<AgingReport | null>(null);
   summary = signal<AccountReceivableSummary | null>(null);
@@ -28,7 +30,7 @@ export class ReportsComponent implements OnInit {
 
     this.arService.getAgingReport().subscribe({
       next: (report) => this.agingReport.set(report),
-      error: () => console.error('Error loading aging report')
+      error: () => this.toast.error('Error al cargar reporte de antigüedad')
     });
 
     this.arService.getAccountReceivableSummary().subscribe({

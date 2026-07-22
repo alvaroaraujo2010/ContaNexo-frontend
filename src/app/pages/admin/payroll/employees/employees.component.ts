@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { ModuleHeaderComponent } from '../../../../shared/module-header/module-header.component';
 import { Employee } from '../../../../core/models';
+import Swal from 'sweetalert2';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -138,7 +139,7 @@ export class EmployeesComponent implements OnInit {
 
     req.subscribe({
       next: () => { this.showForm = false; this.saving = false; this.reload(); },
-      error: () => { this.saving = false; }
+      error: () => { this.saving = false; Swal.fire('Error', 'No se pudo guardar el empleado', 'error'); }
     });
   }
 
@@ -164,7 +165,7 @@ export class EmployeesComponent implements OnInit {
     };
     this.svc.updateEmployee(this.terminatingId!, body).subscribe({
       next: () => { this.showTerminate = false; this.terminatingId = null; this.reload(); },
-      error: () => {}
+      error: () => Swal.fire('Error', 'No se pudo terminar el contrato del empleado', 'error')
     });
   }
 

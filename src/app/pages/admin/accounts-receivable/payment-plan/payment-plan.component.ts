@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountsReceivableService } from '../../../../core/services/accounts-receivable.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Invoice, PaymentPlan } from '../../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -15,6 +16,7 @@ import Swal from 'sweetalert2';
 })
 export class PaymentPlanComponent implements OnInit {
   private arService = inject(AccountsReceivableService);
+  private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -44,7 +46,7 @@ export class PaymentPlanComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        console.error('Error loading invoice');
+        this.toast.error('Error al cargar factura');
         this.loading.set(false);
       }
     });

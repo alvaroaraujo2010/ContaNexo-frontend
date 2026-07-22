@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angu
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { Employee, PayrollSettlement } from '../../../../core/models';
 import { ModuleHeaderComponent } from '../../../../shared/module-header/module-header.component';
+import Swal from 'sweetalert2';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -73,7 +74,7 @@ export class SettlementsComponent implements OnInit {
         this.showSimulation.set(true);
         this.simulating.set(false);
       },
-      error: () => this.simulating.set(false)
+      error: () => { this.simulating.set(false); Swal.fire('Error', 'No se pudo simular la liquidación', 'error'); }
     });
   }
 
@@ -87,7 +88,7 @@ export class SettlementsComponent implements OnInit {
       notes: v.notes ?? ''
     }).subscribe({
       next: () => { this.saving = false; this.showForm = false; this.reload(); },
-      error: () => this.saving = false
+      error: () => { this.saving = false; Swal.fire('Error', 'No se pudo guardar la liquidación', 'error'); }
     });
   }
 

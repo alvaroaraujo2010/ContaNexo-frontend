@@ -7,6 +7,7 @@ import { filter, Subscription } from 'rxjs';
 import { PayrollService } from '../../../../core/services/payroll.service';
 import { SocialSecurityPayment } from '../../../../core/models';
 import Swal from 'sweetalert2';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
   private payrollService = inject(PayrollService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private toast = inject(ToastService);
   auth = inject(AuthService);
   private navSub?: Subscription;
 
@@ -47,7 +49,7 @@ export class SocialSecurityComponent implements OnInit, OnDestroy {
   reload() {
     this.payrollService.getSocialSecurityPayments().subscribe({
       next: (data) => this.payments.set(data),
-      error: () => console.error('Error loading social security payments')
+      error: () => this.toast.error('Error al cargar pagos de seguridad social')
     });
   }
 

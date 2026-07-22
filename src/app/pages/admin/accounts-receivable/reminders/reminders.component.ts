@@ -5,6 +5,7 @@ import { ModuleHeaderComponent } from '../../../../shared/module-header/module-h
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AccountsReceivableService } from '../../../../core/services/accounts-receivable.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Reminder } from '../../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -17,6 +18,7 @@ import Swal from 'sweetalert2';
 })
 export class RemindersComponent implements OnInit {
   private arService = inject(AccountsReceivableService);
+  private toast = inject(ToastService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private navSub?: Subscription;
@@ -38,7 +40,7 @@ export class RemindersComponent implements OnInit {
   reload() {
     this.arService.getReminders().subscribe({
       next: (data) => this.reminders.set(data),
-      error: () => console.error('Error loading reminders')
+      error: () => this.toast.error('Error al cargar recordatorios')
     });
   }
 

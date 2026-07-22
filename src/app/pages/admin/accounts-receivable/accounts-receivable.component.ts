@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { ModuleHeaderComponent } from '../../../shared/module-header/module-header.component';
 import { AccountsReceivableService } from '../../../core/services/accounts-receivable.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Invoice, AccountReceivableSummary } from '../../../core/models';
 import Swal from 'sweetalert2';
 
@@ -17,6 +18,7 @@ import Swal from 'sweetalert2';
 export class AccountsReceivableComponent implements OnInit, OnDestroy {
   private arService = inject(AccountsReceivableService);
   private router = inject(Router);
+  private toast = inject(ToastService);
   private navSub?: Subscription;
 
   invoices = signal<Invoice[]>([]);
@@ -44,14 +46,14 @@ export class AccountsReceivableComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
       error: () => {
-        console.error('Error loading invoices');
+        this.toast.error('Error al cargar facturas');
         this.loading.set(false);
       }
     });
 
     this.arService.getAccountReceivableSummary().subscribe({
       next: (data) => this.summary.set(data),
-      error: () => console.error('Error loading summary')
+      error: () => this.toast.error('Error al cargar resumen')
     });
   }
 
